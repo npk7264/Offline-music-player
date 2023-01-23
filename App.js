@@ -5,9 +5,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import "react-native-gesture-handler";
 
-import Home from "./screens/Home";
-import Player from "./screens/Player";
-import Footer from "./components/Footer";
+import BottomMenu from "./src/components/BottomMenu";
+import Player from "./src/screens/Player";
 
 const Stack = createStackNavigator();
 
@@ -15,12 +14,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Footer"
+        initialRouteName="BottomMenu"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="BottomMenu" component={BottomMenu} />
         <Stack.Screen name="Player" component={Player} />
-        <Stack.Screen name="Footer" component={Footer} />
       </Stack.Navigator>
     </NavigationContainer>
   );
