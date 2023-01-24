@@ -23,20 +23,17 @@ const Song = () => {
       <View
         style={{
           width: "100%",
-          height: "10%",
+          height: 60,
           backgroundColor: "#ccc",
           justifyContent: "center",
           paddingHorizontal: 20,
         }}
       >
-        <Text style={{ fontSize: 30, fontWeight: "500" }}>
-          Bài hát
-        </Text>
+        <Text style={{ fontSize: 30, fontWeight: "500" }}>Bài hát</Text>
       </View>
 
       {/* Danh sách bài hát */}
       <FlatList
-        style={{ flex: 1 }}
         data={songData}
         renderItem={({ item }) => <SongItem info={item} />}
         keyExtractor={(item) => item.id}

@@ -23,7 +23,7 @@ const Favorite = () => {
       <View
         style={{
           width: "100%",
-          height: "10%",
+          height: 60,
           backgroundColor: "#ccc",
           justifyContent: "center",
           paddingHorizontal: 20,

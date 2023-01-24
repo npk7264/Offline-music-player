@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import BackBar from "../components/BackBar";
 import MusicController from "../components/MusicController";
@@ -24,7 +24,9 @@ const Player = ({ route }) => {
 
       <View style={styles.imagePlayer}></View>
 
-      {/* <MusicController /> */}
+      <View style={{ height: 60 }}></View>
+      <View style={{ height: 60, backgroundColor: "#333" }}></View>
+      <MusicController />
     </SafeAreaView>
   );
 };
@@ -34,13 +36,12 @@ export default Player;
 const styles = StyleSheet.create({
   title: {
     width: "100%",
-    height: "10%",
+    height: 60,
     backgroundColor: "#ccc",
     justifyContent: "center",
     paddingHorizontal: 20,
   },
   songInfo: {
-    backgroundColor: "#333",
     height: 80,
     paddingHorizontal: 20,
     paddingBottom: 20,
@@ -52,6 +53,6 @@ const styles = StyleSheet.create({
     height: 250,
     backgroundColor: "#4D8D6E",
     alignSelf: "center",
-    borderRadius: 25,
+    borderRadius: 250 / 2,
   },
 });
