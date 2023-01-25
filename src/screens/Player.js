@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-
+import Slider from '@react-native-community/slider';
 import { Audio } from "expo-av";
 
 import BackBar from "../components/BackBar";
@@ -27,7 +27,22 @@ const Player = ({ route }) => {
       <View style={styles.imagePlayer}></View>
 
       <View style={{ height: 60 }}></View>
-      <View style={{ height: 60, backgroundColor: "#333" }}></View>
+      <View style={{ height: 70, backgroundColor: "#333", justifyContent: 'center', alignItems: "center" }}>
+        <Slider
+          style={styles.progressBar}
+          value={10}
+          minimumValue={0}
+          maximumValue={100}
+          thumbTintColor="red"
+          minimumTrackTintColor="#FFD369"
+          maximumTrackTintColor="#FFF"
+          onSlidingComplete={() => { }}
+        ></Slider>
+        <View style={styles.progressLevelDuration}>
+          <Text style={styles.progressLabelText}>00:00</Text>
+          <Text style={styles.progressLabelText}>00:00</Text>
+        </View>
+      </View>
       <MusicController />
     </SafeAreaView>
   );
@@ -57,4 +72,19 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 250 / 2,
   },
+  progressBar: {
+    width: 350,
+    height: 40,
+    flexDirection: 'row'
+  },
+  progressLevelDuration: {
+    width: 340,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  progressLabelText: {
+    color: '#fff',
+    fontWeight: '500'
+  },
+
 });
