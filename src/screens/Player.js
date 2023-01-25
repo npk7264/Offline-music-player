@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 
+import { Audio } from "expo-av";
+
 import BackBar from "../components/BackBar";
 import MusicController from "../components/MusicController";
 
