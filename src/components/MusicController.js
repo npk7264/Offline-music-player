@@ -3,25 +3,19 @@ import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Audio } from "expo-av";
 
-const objMusic = [
-  {
-    uri: require("../../assets/song1.mp3"),
-  },
-  {
-    uri: require("../../assets/song2.mp3"),
-  },
-];
+import { songData } from "../../data/songData";
 
-const MusicController = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sound, setSound] = useState();
-  const [index, setIndex] = useState(0);
+const MusicController = ({ idMusicClick }) => {
+  const [isPlaying, setIsPlaying] = useState(false); // nhạc đang phát/ tạm dừng
+  const [sound, setSound] = useState(); // lưu obj nhạc
+  const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
+  const [like, setLike] = useState(false); // lưu trạng thái like/unlike
 
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
   const playSoundFirstTime = async () => {
-    const { sound } = await Audio.Sound.createAsync(objMusic[index].uri);
+    const { sound } = await Audio.Sound.createAsync(songData[index].uri);
     setSound(sound);
-    console.log("first time");
+    console.log("first time or replay");
     await sound.playAsync();
   };
   // sự kiện phát nhạc tiếp tục (tạm dừng -> phát tiếp)
@@ -36,24 +30,25 @@ const MusicController = () => {
   };
   // sự kiện replay nhạc (khi tạm dừng)
   const replaySoundPause = async () => {
-    const { sound } = await Audio.Sound.createAsync(objMusic[index].uri);
+    console.log("replay");
+    const { sound } = await Audio.Sound.createAsync(songData[index].uri);
     setSound(sound);
   };
 
   // thao tác tới bài hát trước đó
   const previousSong = () => {
-    setIndex(index - 1 >= 0 ? index - 1 : objMusic.length - 1);
+    setIndex(index - 1 >= 0 ? index - 1 : songData.length - 1);
   };
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
-    setIndex(index + 1 < objMusic.length ? index + 1 : 0);
+    setIndex(index + 1 < songData.length ? index + 1 : 0);
   };
 
   // xử lí khi sound thay đổi
   useEffect(() => {
     return sound
       ? () => {
-          console.log("Unloading Sound");
+          console.log("SOUND has CHANGED");
           sound.unloadAsync();
         }
       : undefined;
@@ -61,6 +56,7 @@ const MusicController = () => {
 
   // xử lí khi index bài hát thay đổi (thao tác next, previous)
   useEffect(() => {
+    console.log("MOVE to NEXT or PREVIOUS");
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
   }, [index]);

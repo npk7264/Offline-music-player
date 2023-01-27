@@ -53,8 +53,8 @@ const Player = ({ route }) => {
         </View>
       </View>
 
-      {/* Thanh điều khiển */}
-      <MusicController />
+      {/* Thanh điều khiển, truyền vào id của bài hát click vào */}
+      <MusicController idMusicClick={route.params.info.id} />
     </SafeAreaView>
   );
 };
