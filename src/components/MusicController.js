@@ -4,12 +4,16 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Audio } from "expo-av";
 
 import { songData } from "../../data/songData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const FAVORITE = "FAVORITE";
 
 const MusicController = ({ idMusicClick }) => {
   const [isPlaying, setIsPlaying] = useState(false); // nhạc đang phát/ tạm dừng
   const [sound, setSound] = useState(); // lưu obj nhạc
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
+  const [listLike, setListLike] = useState([]); // lưu danh sách đã like
 
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
   const playSoundFirstTime = async () => {
@@ -34,7 +38,6 @@ const MusicController = ({ idMusicClick }) => {
     const { sound } = await Audio.Sound.createAsync(songData[index].uri);
     setSound(sound);
   };
-
   // thao tác tới bài hát trước đó
   const previousSong = () => {
     setIndex(index - 1 >= 0 ? index - 1 : songData.length - 1);
@@ -43,6 +46,64 @@ const MusicController = ({ idMusicClick }) => {
   const nextSong = () => {
     setIndex(index + 1 < songData.length ? index + 1 : 0);
   };
+
+  // xử lí dữ liệu
+  const saveFavorite = async () => {
+    try {
+      await AsyncStorage.setItem(
+        FAVORITE,
+        JSON.stringify([...listLike, index])
+      );
+      alert("Data successfully saved");
+    } catch (e) {
+      alert("Failed to save the data to the storage");
+    }
+  };
+
+  const removeFavorite = async () => {
+    try {
+      await AsyncStorage.setItem(
+        FAVORITE,
+        JSON.stringify(
+          listLike.filter((item) => {
+            return item !== index;
+          })
+        )
+      );
+      alert("Data successfully removed");
+    } catch (e) {
+      alert("Failed to remove the data to the storage");
+    }
+  };
+
+  const readFavorite = async () => {
+    try {
+      const value = await AsyncStorage.getItem(FAVORITE);
+      if (value !== null && value !== []) {
+        setListLike(JSON.parse(value));
+        setLike(JSON.parse(value).includes(index));
+      }
+    } catch (e) {
+      alert("Failed to fetch the input from storage");
+    }
+  };
+
+  const saveRecent = async () => {
+    try {
+      await AsyncStorage.setItem(
+        FAVORITE,
+        JSON.stringify([...listLike, index])
+      );
+      alert("Data successfully saved");
+    } catch (e) {
+      alert("Failed to save the data to the storage");
+    }
+  };
+
+  // xử lí khi dữ liệu thay đổi
+  useEffect(() => {
+    readFavorite();
+  }, []);
 
   // xử lí khi sound thay đổi
   useEffect(() => {
@@ -54,11 +115,12 @@ const MusicController = ({ idMusicClick }) => {
       : undefined;
   }, [sound]);
 
-  // xử lí khi index bài hát thay đổi (thao tác next, previous)
+  // xử lí khi index bài hát thay đổi (thao tác next, previous, trạng thái like)
   useEffect(() => {
     console.log("MOVE to NEXT or PREVIOUS");
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
+    readFavorite();
   }, [index]);
 
   return (
@@ -75,11 +137,20 @@ const MusicController = ({ idMusicClick }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
+          onPress={() => {
+            const likeState = !like;
+            alert(likeState);
+            setLike(!like);
+            likeState ? saveFavorite() : removeFavorite();
+          }}
         >
-          <Icon name="heart-o" size={25} color="#fff" />
+          <Icon name={like ? "heart" : "heart-o"} size={25} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
+          onPress={() => {
+            alert(JSON.stringify(listLike));
+          }}
         >
           <Icon name="list-ul" size={25} color="#fff" />
         </TouchableOpacity>

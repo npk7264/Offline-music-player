@@ -6,13 +6,34 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
+
 import { songData } from "../../data/songData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const FAVORITE = "FAVORITE";
 
 const Favorite = () => {
+  const [favoriteList, setFavoriteList] = useState([]);
+
+  const readFavorite = async () => {
+    try {
+      const value = await AsyncStorage.getItem(FAVORITE);
+      if (value !== null && value !== []) {
+        setFavoriteList(JSON.parse(value));
+      }
+    } catch (e) {
+      alert("Failed to fetch the input from storage");
+    }
+  };
+
+  useEffect(() => {
+    readFavorite();
+  }, [favoriteList]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar></StatusBar>
@@ -37,7 +58,10 @@ const Favorite = () => {
       {/* Danh sách bài hát */}
       <FlatList
         style={{ flex: 1 }}
-        data={songData}
+        // lọc bài hát yêu thích từ songData
+        data={songData.filter((item) => {
+          return favoriteList.includes(item.id);
+        })}
         renderItem={({ item }) => <SongItem info={item} />}
         keyExtractor={(item) => item.id}
       />
