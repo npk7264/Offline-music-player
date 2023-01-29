@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Audio } from "expo-av";
-
+import Slider from "@react-native-community/slider";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -11,32 +11,66 @@ const FAVORITE = "FAVORITE";
 const MusicController = ({ idMusicClick }) => {
   const [isPlaying, setIsPlaying] = useState(false); // nhạc đang phát/ tạm dừng
   const [sound, setSound] = useState(); // lưu obj nhạc
+  const [status, setStatus] = useState();
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
 
+
+  const convertTime = minutes => {
+    if (minutes) {
+      const hrs = minutes / 60;
+      const minute = hrs.toString().split('.')[0];
+      const percent = parseInt(hrs.toString().split('.')[1].slice(0, 2));
+      const sec = Math.ceil((60 * percent) / 100);
+      if (parseInt(minute) < 10 && sec < 10) {
+        return `0${minute}:0${sec}`;
+      }
+
+      if (sec == 60) {
+        return `${minute + 1}:00`;
+      }
+
+      if (parseInt(minute) < 10) {
+        return `0${minute}:${sec}`;
+      }
+
+      if (sec < 10) {
+        return `${minute}:0${sec}`;
+      }
+
+      return `${minute}:${sec}`;
+    }
+  };
+
+
+
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
   const playSoundFirstTime = async () => {
-    const { sound } = await Audio.Sound.createAsync(songData[index].uri);
+    const { sound, status } = await Audio.Sound.createAsync(songData[index].uri);
     setSound(sound);
+    setStatus(status);
     console.log("first time or replay");
     await sound.playAsync();
   };
   // sự kiện phát nhạc tiếp tục (tạm dừng -> phát tiếp)
   const playSound = async () => {
     console.log("play");
-    await sound.playAsync();
+    const status = await sound.playAsync();
+    setStatus(status);
   };
   // sự kiện tạm dừng nhạc
   const stopSound = async () => {
     console.log("pause");
-    await sound.pauseAsync();
+    const status = await sound.pauseAsync();
+    setStatus(status);
   };
   // sự kiện replay nhạc (khi tạm dừng)
   const replaySoundPause = async () => {
     console.log("replay");
-    const { sound } = await Audio.Sound.createAsync(songData[index].uri);
+    const { sound, status } = await Audio.Sound.createAsync(songData[index].uri);
     setSound(sound);
+    setStatus(status);
   };
   // thao tác tới bài hát trước đó
   const previousSong = () => {
@@ -109,9 +143,9 @@ const MusicController = ({ idMusicClick }) => {
   useEffect(() => {
     return sound
       ? () => {
-          console.log("SOUND has CHANGED");
-          sound.unloadAsync();
-        }
+        console.log("SOUND has CHANGED");
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
@@ -125,6 +159,31 @@ const MusicController = ({ idMusicClick }) => {
 
   return (
     <View>
+      <View
+        style={{
+          height: 100,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Slider
+          style={styles.progressBar}
+          value={10}
+          minimumValue={0}
+          maximumValue={100}
+          thumbTintColor="red"
+          minimumTrackTintColor="#000"
+          maximumTrackTintColor="#000"
+          onSlidingComplete={() => { }}
+        ></Slider>
+        <View style={styles.progressLevelDuration}>
+          <Text style={styles.progressLabelText}>{convertTime(status?.positionMillis / 1000)}</Text>
+          <Text style={styles.progressLabelText}>{convertTime(status?.durationMillis / 1000)}</Text>
+        </View>
+      </View>
+
+
+
       {/* thanh chứa các nút replay, yêu thích, thêm vào playlist */}
       <View style={[styles.controllerContainer, { height: 60 }]}>
         <TouchableOpacity
@@ -208,5 +267,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#333",
     justifyContent: "center",
     alignItems: "center",
+  },
+  progressBar: {
+    width: 350,
+    height: 40,
+    flexDirection: "row",
+  },
+  progressLevelDuration: {
+    width: 340,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  progressLabelText: {
+    color: "#000",
+    fontWeight: "500",
   },
 });
