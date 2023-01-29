@@ -30,7 +30,7 @@ const Player = ({ route }) => {
       <View style={styles.imagePlayer}></View>
 
       {/* Thanh tiến trình phát nhạc */}
-      <View
+      {/* <View
         style={{
           height: 100,
           justifyContent: "center",
@@ -51,7 +51,7 @@ const Player = ({ route }) => {
           <Text style={styles.progressLabelText}>00:00</Text>
           <Text style={styles.progressLabelText}>00:00</Text>
         </View>
-      </View>
+      </View> */}
 
       {/* Thanh điều khiển, truyền vào id của bài hát click vào */}
       <MusicController idMusicClick={route.params.info.id} />
