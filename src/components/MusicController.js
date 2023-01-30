@@ -9,45 +9,44 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const FAVORITE = "FAVORITE";
 
 const MusicController = ({ idMusicClick }) => {
-  const [isPlaying, setIsPlaying] = useState(false); // nhạc đang phát/ tạm dừng
+  const [isPlaying, setIsPlaying] = useState(true); // nhạc đang phát/ tạm dừng
   const [sound, setSound] = useState(); // lưu obj nhạc
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState(); // lưu trạng thái nhạc
+  const [currentTime, setCurrentTime] = useState(0); // lưu thời gian phát nhạc
+
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
 
-
-  const convertTime = minutes => {
+  // hàm chuyển đổi định dạng thời gian
+  const convertTime = (minutes) => {
     if (minutes) {
       const hrs = minutes / 60;
-      const minute = hrs.toString().split('.')[0];
-      const percent = parseInt(hrs.toString().split('.')[1].slice(0, 2));
+      const minute = hrs.toString().split(".")[0];
+      const percent = parseInt(hrs.toString().split(".")[1].slice(0, 2));
       const sec = Math.ceil((60 * percent) / 100);
-      if (parseInt(minute) < 10 && sec < 10) {
-        return `0${minute}:0${sec}`;
-      }
-
-      if (sec == 60) {
-        return `${minute + 1}:00`;
-      }
-
-      if (parseInt(minute) < 10) {
-        return `0${minute}:${sec}`;
-      }
-
-      if (sec < 10) {
-        return `${minute}:0${sec}`;
-      }
-
+      if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec}`;
+      if (sec == 60) return `${minute + 1}:00`;
+      if (parseInt(minute) < 10) return `0${minute}:${sec}`;
+      if (sec < 10) return `${minute}:0${sec}`;
       return `${minute}:${sec}`;
     }
+    return `00:00`;
   };
-
-
 
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
   const playSoundFirstTime = async () => {
-    const { sound, status } = await Audio.Sound.createAsync(songData[index].uri);
+    const { sound, status } = await Audio.Sound.createAsync(
+      songData[index].uri,
+      {},
+      (status) => {
+        const curr = convertTime(status?.positionMillis / 1000);
+        setCurrentTime(curr);
+        // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
+        if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
+          nextSong();
+      }
+    );
     setSound(sound);
     setStatus(status);
     console.log("first time or replay");
@@ -60,7 +59,7 @@ const MusicController = ({ idMusicClick }) => {
     setStatus(status);
   };
   // sự kiện tạm dừng nhạc
-  const stopSound = async () => {
+  const pauseSound = async () => {
     console.log("pause");
     const status = await sound.pauseAsync();
     setStatus(status);
@@ -68,7 +67,17 @@ const MusicController = ({ idMusicClick }) => {
   // sự kiện replay nhạc (khi tạm dừng)
   const replaySoundPause = async () => {
     console.log("replay");
-    const { sound, status } = await Audio.Sound.createAsync(songData[index].uri);
+    const { sound, status } = await Audio.Sound.createAsync(
+      songData[index].uri,
+      {},
+      (status) => {
+        const curr = convertTime(status?.positionMillis / 1000);
+        setCurrentTime(curr);
+        // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
+        if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
+          nextSong();
+      }
+    );
     setSound(sound);
     setStatus(status);
   };
@@ -93,7 +102,6 @@ const MusicController = ({ idMusicClick }) => {
       alert("Failed to save the data to the storage");
     }
   };
-
   const removeFavorite = async () => {
     try {
       await AsyncStorage.setItem(
@@ -109,7 +117,6 @@ const MusicController = ({ idMusicClick }) => {
       alert("Failed to remove the data to the storage");
     }
   };
-
   const readFavorite = async () => {
     try {
       const value = await AsyncStorage.getItem(FAVORITE);
@@ -143,9 +150,9 @@ const MusicController = ({ idMusicClick }) => {
   useEffect(() => {
     return sound
       ? () => {
-        console.log("SOUND has CHANGED");
-        sound.unloadAsync();
-      }
+          console.log("SOUND has CHANGED");
+          sound.unloadAsync();
+        }
       : undefined;
   }, [sound]);
 
@@ -174,15 +181,15 @@ const MusicController = ({ idMusicClick }) => {
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
-          onSlidingComplete={() => { }}
+          onSlidingComplete={() => {}}
         ></Slider>
         <View style={styles.progressLevelDuration}>
-          <Text style={styles.progressLabelText}>{convertTime(status?.positionMillis / 1000)}</Text>
-          <Text style={styles.progressLabelText}>{convertTime(status?.durationMillis / 1000)}</Text>
+          <Text style={styles.progressLabelText}>{currentTime}</Text>
+          <Text style={styles.progressLabelText}>
+            {convertTime(status?.durationMillis / 1000)}
+          </Text>
         </View>
       </View>
-
-
 
       {/* thanh chứa các nút replay, yêu thích, thêm vào playlist */}
       <View style={[styles.controllerContainer, { height: 60 }]}>
@@ -230,7 +237,7 @@ const MusicController = ({ idMusicClick }) => {
             if (soundState) {
               if (sound == undefined) playSoundFirstTime();
               else playSound();
-            } else stopSound();
+            } else pauseSound();
           }}
         >
           <Icon
