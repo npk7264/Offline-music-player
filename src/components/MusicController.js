@@ -25,8 +25,11 @@ const MusicController = ({ idMusicClick }) => {
       const minute = hrs.toString().split(".")[0];
       const percent = parseInt(hrs.toString().split(".")[1].slice(0, 2));
       const sec = Math.ceil((60 * percent) / 100);
-      if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec}`;
-      if (sec == 60) return `${minute + 1}:00`;
+      if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec};`
+      if (sec == 60)
+        return parseInt(minute) + 1 < 10
+          ? `0${parseInt(minute) + 1}:00`
+          : `${parseInt(minute) + 1}:00`;
       if (parseInt(minute) < 10) return `0${minute}:${sec}`;
       if (sec < 10) return `${minute}:0${sec}`;
       return `${minute}:${sec}`;
@@ -150,9 +153,9 @@ const MusicController = ({ idMusicClick }) => {
   useEffect(() => {
     return sound
       ? () => {
-          console.log("SOUND has CHANGED");
-          sound.unloadAsync();
-        }
+        console.log("SOUND has CHANGED");
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
@@ -181,7 +184,7 @@ const MusicController = ({ idMusicClick }) => {
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
-          onSlidingComplete={() => {}}
+          onSlidingComplete={() => { }}
         ></Slider>
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{currentTime}</Text>
