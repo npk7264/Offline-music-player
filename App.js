@@ -7,6 +7,7 @@ import "react-native-gesture-handler";
 
 import BottomMenu from "./src/components/BottomMenu";
 import Player from "./src/screens/Player";
+import Search from "./src/screens/Search";
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,7 @@ export default function App() {
       >
         <Stack.Screen name="BottomMenu" component={BottomMenu} />
         <Stack.Screen name="Player" component={Player} />
+        <Stack.Screen name="Search" component={Search} />
       </Stack.Navigator>
     </NavigationContainer>
   );
