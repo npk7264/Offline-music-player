@@ -15,7 +15,7 @@ export default BottomMenu = () => {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen
-        name="Song"
+        name="Bài hát"
         component={Song}
         options={{ tabBarLabelStyle: styles.menuTitle }}
       />
@@ -25,12 +25,12 @@ export default BottomMenu = () => {
         options={{ tabBarLabelStyle: styles.menuTitle }}
       />
       <Tab.Screen
-        name="Favorite"
+        name="Yêu thích"
         component={Favorite}
         options={{ tabBarLabelStyle: styles.menuTitle }}
       />
       <Tab.Screen
-        name="Recent"
+        name="Gần đây"
         component={Recent}
         options={{ tabBarLabelStyle: styles.menuTitle }}
       />
