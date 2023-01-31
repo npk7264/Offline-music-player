@@ -159,21 +159,26 @@ const MusicController = ({ idMusicClick }) => {
     try {
       // ĐỌC DỮ LIỆU từ Async Storage để set ListRecent
       const value = await AsyncStorage.getItem(RECENT);
-      if (value !== null) await setListRecent(JSON.parse(value));
-      console.log("READ DATA from ASYNC STORAGE: " + value);
+      if (value !== null) {
+        await setListRecent(JSON.parse(value));
+        console.log("READ DATA from ASYNC STORAGE: " + value);
 
-      // LƯU DỮ LIỆU mới
-      let jsonValue = JSON.parse(value);
-      // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
-      if (jsonValue.includes(index)) {
-        jsonValue = jsonValue.filter((item) => {
-          return item != index;
-        });
-      }
-      // lưu
-      await AsyncStorage.setItem(RECENT, JSON.stringify([index, ...jsonValue]));
+        // LƯU DỮ LIỆU mới
+        let jsonValue = JSON.parse(value);
+        // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
+        if (jsonValue.includes(index)) {
+          jsonValue = jsonValue.filter((item) => {
+            return item != index;
+          });
+        }
+        // lưu
+        await AsyncStorage.setItem(
+          RECENT,
+          JSON.stringify([index, ...jsonValue])
+        );
+      } else await AsyncStorage.setItem(RECENT, JSON.stringify([index]));
     } catch (e) {
-      alert("Failed to fetch the input from storage");
+      alert("Failed to fetch the RECENT from storage");
     }
   };
 
