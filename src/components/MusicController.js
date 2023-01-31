@@ -7,6 +7,7 @@ import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FAVORITE = "FAVORITE";
+const RECENT = "RECENT";
 
 const MusicController = ({ idMusicClick }) => {
   const [isPlaying, setIsPlaying] = useState(true); // nhạc đang phát/ tạm dừng
@@ -17,6 +18,8 @@ const MusicController = ({ idMusicClick }) => {
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
+
+  const [listRecent, setListRecent] = useState([]); // lưu danh sách phát gần đây: [{id: id bài hát, time: thời gian nghe mới nhất},...]
 
   // hàm chuyển đổi định dạng thời gian
   const convertTime = (minutes) => {
@@ -134,13 +137,23 @@ const MusicController = ({ idMusicClick }) => {
 
   const saveRecent = async () => {
     try {
-      await AsyncStorage.setItem(
-        FAVORITE,
-        JSON.stringify([...listLike, index])
-      );
-      alert("Data successfully saved");
+      // ĐỌC DỮ LIỆU từ Async Storage để set ListRecent
+      const value = await AsyncStorage.getItem(RECENT);
+      if (value !== null) await setListRecent(JSON.parse(value));
+      console.log("READ DATA from ASYNC STORAGE: " + value);
+
+      // LƯU DỮ LIỆU mới
+      let jsonValue = JSON.parse(value);
+      // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
+      if (jsonValue.includes(index)) {
+        jsonValue = jsonValue.filter((item) => {
+          return item != index;
+        });
+      }
+      // lưu
+      await AsyncStorage.setItem(RECENT, JSON.stringify([index, ...jsonValue]));
     } catch (e) {
-      alert("Failed to save the data to the storage");
+      alert("Failed to fetch the input from storage");
     }
   };
 
@@ -153,9 +166,9 @@ const MusicController = ({ idMusicClick }) => {
   useEffect(() => {
     return sound
       ? () => {
-        console.log("SOUND has CHANGED");
-        sound.unloadAsync();
-      }
+          console.log("SOUND has CHANGED");
+          sound.unloadAsync();
+        }
       : undefined;
   }, [sound]);
 
@@ -165,6 +178,8 @@ const MusicController = ({ idMusicClick }) => {
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
     readFavorite();
+
+    saveRecent();
   }, [index]);
 
   return (
@@ -184,7 +199,7 @@ const MusicController = ({ idMusicClick }) => {
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
-          onSlidingComplete={() => { }}
+          onSlidingComplete={() => {}}
         ></Slider>
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{currentTime}</Text>
@@ -218,7 +233,7 @@ const MusicController = ({ idMusicClick }) => {
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
-            alert(JSON.stringify(listLike));
+            alert(JSON.stringify(listRecent));
           }}
         >
           <Icon name="list-ul" size={25} color="#fff" />

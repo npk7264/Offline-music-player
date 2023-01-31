@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 export default BottomMenu = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Song"
+      initialRouteName="Bài hát"
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen
