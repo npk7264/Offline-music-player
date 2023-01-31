@@ -14,12 +14,20 @@ const MusicController = ({ idMusicClick }) => {
   const [sound, setSound] = useState(); // lưu obj nhạc
   const [status, setStatus] = useState(); // lưu trạng thái nhạc
   const [currentTime, setCurrentTime] = useState(0); // lưu thời gian phát nhạc
-
+  const [durationTime, setDurationTime] = useState(1); // lưu thời gian bài hát theo mili giây
+  const [posTime, setPosTime] = useState(0); // lưu vị trí hiện tại bài hát theo mili giây
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
 
   const [listRecent, setListRecent] = useState([]); // lưu danh sách phát gần đây: [{id: id bài hát, time: thời gian nghe mới nhất},...]
+
+  //hàm tính value cho thanh slider
+  const convertValueSlider = () => {
+    if (!isNaN(posTime / durationTime))
+      return (posTime / durationTime);
+    return 0;
+  }
 
   // hàm chuyển đổi định dạng thời gian
   const convertTime = (minutes) => {
@@ -48,6 +56,8 @@ const MusicController = ({ idMusicClick }) => {
       (status) => {
         const curr = convertTime(status?.positionMillis / 1000);
         setCurrentTime(curr);
+        setDurationTime(status?.durationMillis);
+        setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
         if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
           nextSong();
@@ -79,6 +89,7 @@ const MusicController = ({ idMusicClick }) => {
       (status) => {
         const curr = convertTime(status?.positionMillis / 1000);
         setCurrentTime(curr);
+        setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
         if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
           nextSong();
@@ -166,9 +177,9 @@ const MusicController = ({ idMusicClick }) => {
   useEffect(() => {
     return sound
       ? () => {
-          console.log("SOUND has CHANGED");
-          sound.unloadAsync();
-        }
+        console.log("SOUND has CHANGED");
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
@@ -193,13 +204,13 @@ const MusicController = ({ idMusicClick }) => {
       >
         <Slider
           style={styles.progressBar}
-          value={10}
           minimumValue={0}
-          maximumValue={100}
+          maximumValue={1}
+          value={convertValueSlider()}
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
-          onSlidingComplete={() => {}}
+
         ></Slider>
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{currentTime}</Text>
