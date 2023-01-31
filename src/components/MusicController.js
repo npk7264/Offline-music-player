@@ -24,10 +24,9 @@ const MusicController = ({ idMusicClick }) => {
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
-    if (!isNaN(posTime / durationTime))
-      return (posTime / durationTime);
+    if (!isNaN(posTime / durationTime)) return posTime / durationTime;
     return 0;
-  }
+  };
 
   // hàm chuyển đổi định dạng thời gian
   const convertTime = (minutes) => {
@@ -80,22 +79,15 @@ const MusicController = ({ idMusicClick }) => {
     const status = await sound.pauseAsync();
     setStatus(status);
   };
-
-  const scrollSlider = async (value) => {
-    console.log("scroll");
-    const status = sound.setPositionAsync(Math.floor(value * durationTime));
-    setStatus(status);
-    await resume(sound);
-  }
   // sự kiện replay nhạc (khi tạm dừng)
   const replaySoundPause = async () => {
-    console.log("replay");
     const { sound, status } = await Audio.Sound.createAsync(
       songData[index].uri,
       {},
       (status) => {
         const curr = convertTime(status?.positionMillis / 1000);
         setCurrentTime(curr);
+        setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
         if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
@@ -104,6 +96,7 @@ const MusicController = ({ idMusicClick }) => {
     );
     setSound(sound);
     setStatus(status);
+    console.log("first time or replay");
   };
   // thao tác tới bài hát trước đó
   const previousSong = () => {
@@ -112,6 +105,15 @@ const MusicController = ({ idMusicClick }) => {
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
     setIndex(index + 1 < songData.length ? index + 1 : 0);
+  };
+  // sự kiện di chuyển seekbar
+  const scrollSlider = async (value) => {
+    console.log("scroll");
+    const status = await sound.setPositionAsync(
+      Math.floor(value * durationTime)
+    );
+    setStatus(status);
+    //await resume(sound);
   };
 
   // xử lí dữ liệu
@@ -217,19 +219,20 @@ const MusicController = ({ idMusicClick }) => {
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
-          onValueChange={value => {
-            setCurrentTime(convertTime(Math.floor(value * durationTime) / 1000));
+          onValueChange={(value) => {
+            setCurrentTime(
+              convertTime(Math.floor(value * durationTime) / 1000)
+            );
             setPosTime(Math.floor(value * durationTime));
           }}
-          onSlidingComplete={async value => {
+          onSlidingComplete={async (value) => {
             await scrollSlider(value);
           }}
-
         ></Slider>
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{currentTime}</Text>
           <Text style={styles.progressLabelText}>
-            {convertTime(durationTime / 1000)}
+            {convertTime(status?.durationMillis / 1000)}
           </Text>
         </View>
       </View>
