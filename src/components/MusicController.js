@@ -26,7 +26,10 @@ const MusicController = ({ idMusicClick }) => {
       const percent = parseInt(hrs.toString().split(".")[1].slice(0, 2));
       const sec = Math.ceil((60 * percent) / 100);
       if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec}`;
-      if (sec == 60) return `${minute + 1}:00`;
+      if (sec == 60)
+        return parseInt(minute) + 1 < 10
+          ? `0${parseInt(minute) + 1}:00`
+          : `${parseInt(minute) + 1}:00`;
       if (parseInt(minute) < 10) return `0${minute}:${sec}`;
       if (sec < 10) return `${minute}:0${sec}`;
       return `${minute}:${sec}`;
@@ -234,6 +237,7 @@ const MusicController = ({ idMusicClick }) => {
           onPress={() => {
             setIsPlaying(!isPlaying);
             const soundState = !isPlaying;
+            // Kiểm tra trạng thái isPlaying để phát nhạc hoặc tạm dừng
             if (soundState) {
               if (sound == undefined) playSoundFirstTime();
               else playSound();
