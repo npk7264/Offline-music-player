@@ -153,9 +153,9 @@ const MusicController = ({ idMusicClick }) => {
   useEffect(() => {
     return sound
       ? () => {
-          console.log("SOUND has CHANGED");
-          sound.unloadAsync();
-        }
+        console.log("SOUND has CHANGED");
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
@@ -184,7 +184,7 @@ const MusicController = ({ idMusicClick }) => {
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
-          onSlidingComplete={() => {}}
+          onSlidingComplete={() => { }}
         ></Slider>
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{currentTime}</Text>
