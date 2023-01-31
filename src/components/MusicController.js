@@ -80,6 +80,13 @@ const MusicController = ({ idMusicClick }) => {
     const status = await sound.pauseAsync();
     setStatus(status);
   };
+
+  const scrollSlider = async (value) => {
+    console.log("scroll");
+    const status = sound.setPositionAsync(Math.floor(value * durationTime));
+    setStatus(status);
+    await resume(sound);
+  }
   // sự kiện replay nhạc (khi tạm dừng)
   const replaySoundPause = async () => {
     console.log("replay");
@@ -210,12 +217,19 @@ const MusicController = ({ idMusicClick }) => {
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
+          onValueChange={value => {
+            setCurrentTime(convertTime(Math.floor(value * durationTime) / 1000));
+            setPosTime(Math.floor(value * durationTime));
+          }}
+          onSlidingComplete={async value => {
+            await scrollSlider(value);
+          }}
 
         ></Slider>
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{currentTime}</Text>
           <Text style={styles.progressLabelText}>
-            {convertTime(status?.durationMillis / 1000)}
+            {convertTime(durationTime / 1000)}
           </Text>
         </View>
       </View>
