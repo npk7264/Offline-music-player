@@ -29,6 +29,7 @@ const Playlist = () => {
         PLAYLIST,
         JSON.stringify([...playlistList, inputPlaylist])
       );
+      setInputPlaylist("");
     } catch (e) {
       alert("Failed to save the PLAYLIST to the storage");
     }
@@ -75,7 +76,6 @@ const Playlist = () => {
                 alert("Playlist đã tồn tại, vui lòng tạo playlist mới!");
               else {
                 setPlaylistList([...playlistList, inputPlaylist]);
-                setInputPlaylist("");
                 savePlaylist();
               }
             } else {
