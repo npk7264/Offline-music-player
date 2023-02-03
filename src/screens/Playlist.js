@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 // import PlaylistItem from "../components/PlaylistItem";
@@ -89,9 +89,12 @@ const Playlist = () => {
     );
   };
 
+  // refesh khi nhấn vào tab
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     readPlaylist();
-  }, []);
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
