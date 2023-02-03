@@ -6,6 +6,8 @@ import Slider from "@react-native-community/slider";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import PlaylistModal from "./PlaylistModal";
+
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
 
@@ -21,6 +23,8 @@ const MusicController = ({ idMusicClick }) => {
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
 
   const [listRecent, setListRecent] = useState([]); // lưu danh sách phát gần đây: [{id: id bài hát, time: thời gian nghe mới nhất},...]
+
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false); // lưu trạng thái ẩn hiện của bảng chọn playlist
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
@@ -191,9 +195,9 @@ const MusicController = ({ idMusicClick }) => {
   useEffect(() => {
     return sound
       ? () => {
-        console.log("SOUND has CHANGED");
-        sound.unloadAsync();
-      }
+          console.log("SOUND has CHANGED");
+          sound.unloadAsync();
+        }
       : undefined;
   }, [sound]);
 
@@ -206,6 +210,11 @@ const MusicController = ({ idMusicClick }) => {
 
     saveRecent();
   }, [index]);
+
+  // xử lí trạng thái trả về từ PlaylistModal
+  const turnOffModal = () => {
+    setShowPlaylistModal(false);
+  };
 
   return (
     <View>
@@ -266,7 +275,11 @@ const MusicController = ({ idMusicClick }) => {
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
-            alert(JSON.stringify(listRecent));
+            // Pause
+            setIsPlaying(false);
+            pauseSound();
+            // Mở playlist Modal
+            setShowPlaylistModal(true);
           }}
         >
           <Icon name="list-ul" size={25} color="#fff" />
@@ -306,6 +319,11 @@ const MusicController = ({ idMusicClick }) => {
       <Text>
         {index.toString()} + {isPlaying.toString()}
       </Text>
+      <PlaylistModal
+        showPlaylistModal={showPlaylistModal}
+        onData={turnOffModal}
+        songID={index}
+      />
     </View>
   );
 };
