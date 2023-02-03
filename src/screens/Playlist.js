@@ -7,18 +7,22 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
-import PlaylistItem from "../components/PlaylistItem";
+// import PlaylistItem from "../components/PlaylistItem";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PLAYLIST = "PLAYLIST";
 
 const Playlist = () => {
+  const navigation = useNavigation();
+
   const [inputPlaylist, setInputPlaylist] = useState(""); // tên playlist mới
   const [playlistList, setPlaylistList] = useState([]); // danh sách playlist đã tạo
 
@@ -45,6 +49,45 @@ const Playlist = () => {
       alert("Failed to fetch the PLAYLIST from storage");
     }
   };
+  // xóa danh sách phát
+  const deleteItem = async (item) => {
+    try {
+      const newPlaylistList = playlistList.filter((i) => i !== item);
+      await AsyncStorage.removeItem(item);
+      await AsyncStorage.setItem(PLAYLIST, JSON.stringify(newPlaylistList));
+      setPlaylistList(newPlaylistList);
+    } catch (e) {
+      Alert.alert("Failed to delete the item from the PLAYLIST");
+    }
+  };
+
+  const PlaylistItem = ({ name }) => {
+    return (
+      <TouchableOpacity
+        // sự kiện nhấn vào sẽ chuyển tới trang detail playlist
+        onPress={() => {
+          navigation.navigate("DetailPlaylist", { name });
+        }}
+        // sự kiện nhấn giữ để xóa
+        onLongPress={() => {
+          Alert.alert("XÓA PLAYLIST", "Bạn muốn xóa playlist " + name + "?", [
+            {
+              text: "Không",
+              onPress: () => console.log("Cancelled"),
+            },
+            {
+              text: "OK",
+              onPress: () => deleteItem(name),
+            },
+          ]);
+        }}
+      >
+        <View style={styles.playlistItem}>
+          <Text style={{ fontSize: 20 }}>{name}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   useEffect(() => {
     readPlaylist();
@@ -63,7 +106,7 @@ const Playlist = () => {
         <TextInput
           placeholder="Thêm danh sách phát mới"
           style={styles.playlistInput}
-          value = {inputPlaylist}
+          value={inputPlaylist}
           onChangeText={(value) => {
             setInputPlaylist(value);
           }}
@@ -121,5 +164,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#333",
     justifyContent: "center",
     alignItems: "center",
+  },
+  playlistItem: {
+    width: "100%",
+    height: 60,
+    justifyContent: "center",
+    paddingHorizontal: 20,
   },
 });
