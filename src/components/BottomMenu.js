@@ -27,12 +27,11 @@ export default BottomMenu = () => {
             <Entypo
               name="music"
               size={24}
-              // color={focused ? "#e32f45" : "#748c94"}
-              color={focused ? "tomato" : "#4D8D6E"}
+              color={focused ? "#4D8D6E" : "#ccc"}
             />
           ),
-          tabBarInactiveTintColor: "#4D8D6E",
-          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "#ccc",
+          tabBarActiveTintColor: "#4D8D6E",
         }}
       />
       <Tab.Screen
@@ -44,11 +43,11 @@ export default BottomMenu = () => {
             <MaterialCommunityIcons
               name="playlist-music"
               size={24}
-              color={focused ? "tomato" : "#4D8D6E"}
+              color={focused ? "#4D8D6E" : "#ccc"}
             />
           ),
-          tabBarInactiveTintColor: "#4D8D6E",
-          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "#ccc",
+          tabBarActiveTintColor: "#4D8D6E",
         }}
       />
       <Tab.Screen
@@ -60,11 +59,11 @@ export default BottomMenu = () => {
             <Entypo
               name="heart"
               size={24}
-              color={focused ? "tomato" : "#4D8D6E"}
+              color={focused ? "#4D8D6E" : "#ccc"}
             />
           ),
-          tabBarInactiveTintColor: "#4D8D6E",
-          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "#ccc",
+          tabBarActiveTintColor: "#4D8D6E",
         }}
       />
       <Tab.Screen
@@ -76,11 +75,11 @@ export default BottomMenu = () => {
             <MaterialIcons
               name="history"
               size={24}
-              color={focused ? "tomato" : "#4D8D6E"}
+              color={focused ? "#4D8D6E" : "#ccc"}
             />
           ),
-          tabBarInactiveTintColor: "#4D8D6E",
-          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "#ccc",
+          tabBarActiveTintColor: "#4D8D6E",
         }}
       />
     </Tab.Navigator>
