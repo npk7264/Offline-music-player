@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -27,7 +28,6 @@ const PlaylistItem = ({ name, screen, songID }) => {
       if (value !== null) {
         setSongInPlaylist(JSON.parse(value));
       }
-      console.log(name + " " + value);
     } catch (e) {
       alert("Failed to fetch the PLAYLIST SONG from storage");
     }
@@ -37,17 +37,18 @@ const PlaylistItem = ({ name, screen, songID }) => {
     readSongFromPlaylist();
   }, []);
 
+  const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       style={styles.playlistItem}
       onPress={() => {
         // lưu bài hát vào playlist nếu playlist item thuộc playlistmodal
         if (screen == "AddPlaylist") {
-          alert(songID + " " + name);
           saveSongToPlaylist();
         }
         //
-        else alert("See Playlist");
+        else navigation.navigate("DetailPlaylist", { name });
       }}
     >
       <Text style={{ fontSize: 20 }}>{name}</Text>
