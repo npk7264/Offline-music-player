@@ -28,7 +28,7 @@ const SongModal = ({ showSongModal, onData, playlistName }) => {
       const value = await AsyncStorage.getItem(playlistName);
       if (value !== null) {
         setSongInPlaylist(JSON.parse(value));
-        console.log(value);
+        // console.log(value);
       }
     } catch (e) {
       alert("Failed to fetch the PLAYLIST from storage");
