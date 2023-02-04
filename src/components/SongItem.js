@@ -11,7 +11,7 @@ const SongItem = ({ info }) => {
       style={{
         width: "100%",
         height: 60,
-        paddingVertical: 5,
+        paddingTop: 5,
         paddingHorizontal: 20,
         justifyContent: "space-around",
       }}
@@ -19,8 +19,14 @@ const SongItem = ({ info }) => {
         navigation.navigate("Player", { info });
       }}
     >
-      <Text style={{ fontSize: 18 }}>{info.name}</Text>
-      <Text style={{ fontSize: 16, color: "gray" }}>{info.singer}</Text>
+      <View
+        style={{ height: "100%", borderBottomWidth: 0.5, borderColor: "#ccc" }}
+      >
+        <Text style={{ fontSize: 18 }} numberOfLines={1}>
+          {info.name}
+        </Text>
+        <Text style={{ fontSize: 16, color: "gray" }}>{info.singer}</Text>
+      </View>
     </TouchableOpacity>
   );
 };

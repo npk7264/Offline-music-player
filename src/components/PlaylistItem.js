@@ -51,7 +51,18 @@ const PlaylistItem = ({ name, screen, songID }) => {
         else navigation.navigate("DetailPlaylist", { name });
       }}
     >
-      <Text style={{ fontSize: 20 }}>{name}</Text>
+      <View
+        style={{
+          height: "100%",
+          borderBottomWidth: 0.5,
+          borderColor: "#ccc",
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ fontSize: 20 }} numberOfLines={1}>
+          {name}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -62,8 +73,6 @@ const styles = StyleSheet.create({
   playlistItem: {
     width: "100%",
     height: 60,
-    paddingVertical: 5,
     paddingHorizontal: 20,
-    justifyContent: "space-around",
   },
 });

@@ -64,6 +64,7 @@ const Playlist = () => {
   const PlaylistItem = ({ name }) => {
     return (
       <TouchableOpacity
+        style={styles.playlistItem}
         // sự kiện nhấn vào sẽ chuyển tới trang detail playlist
         onPress={() => {
           navigation.navigate("DetailPlaylist", { name });
@@ -82,8 +83,17 @@ const Playlist = () => {
           ]);
         }}
       >
-        <View style={styles.playlistItem}>
-          <Text style={{ fontSize: 20 }}>{name}</Text>
+        <View
+          style={{
+            height: "100%",
+            borderBottomWidth: 0.5,
+            borderColor: "#ccc",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ fontSize: 20 }} numberOfLines={1}>
+            {name}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -172,7 +182,6 @@ const styles = StyleSheet.create({
   playlistItem: {
     width: "100%",
     height: 60,
-    justifyContent: "center",
     paddingHorizontal: 20,
   },
 });
