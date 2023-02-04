@@ -18,16 +18,17 @@ const Player = ({ route }) => {
         <Text style={{ fontSize: 30, fontWeight: "500" }}>Nghe nhạc</Text>
       </View>
 
-      {/* Thông tin nhạc */}
-      <View style={styles.songInfo}>
-        <Text style={{ fontSize: 25 }}>{route.params.info.name}</Text>
-        <Text style={{ fontSize: 20, color: "gray" }}>
-          {route.params.info.singer}
-        </Text>
-      </View>
-
       {/* Hình ảnh */}
-      <View style={styles.imagePlayer}></View>
+      <View
+        style={{
+          width: "100%",
+          height: 300,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <View style={styles.imagePlayer}></View>
+      </View>
 
       {/* Thanh tiến trình phát nhạc */}
       {/* <View

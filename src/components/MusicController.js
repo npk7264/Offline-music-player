@@ -127,7 +127,7 @@ const MusicController = ({ idMusicClick }) => {
         FAVORITE,
         JSON.stringify([...listLike, index])
       );
-      alert("Data successfully saved");
+      // alert("Data successfully saved");
     } catch (e) {
       alert("Failed to save the data to the storage");
     }
@@ -142,7 +142,7 @@ const MusicController = ({ idMusicClick }) => {
           })
         )
       );
-      alert("Data successfully removed");
+      // alert("Data successfully removed");
     } catch (e) {
       alert("Failed to remove the data to the storage");
     }
@@ -218,9 +218,16 @@ const MusicController = ({ idMusicClick }) => {
 
   return (
     <View>
+      {/* Thông tin nhạc */}
+      <View style={styles.songInfo}>
+        <Text style={{ fontSize: 25 }}>{songData[index].name}</Text>
+        <Text style={{ fontSize: 20, color: "gray" }}>
+          {songData[index].singer}
+        </Text>
+      </View>
       <View
         style={{
-          height: 100,
+          height: 60,
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -265,7 +272,6 @@ const MusicController = ({ idMusicClick }) => {
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
             const likeState = !like;
-            alert(likeState);
             setLike(!like);
             likeState ? saveFavorite() : removeFavorite();
           }}
@@ -316,9 +322,9 @@ const MusicController = ({ idMusicClick }) => {
           <Icon name="step-forward" size={35} color="#fff" />
         </TouchableOpacity>
       </View>
-      <Text>
+      {/* <Text>
         {index.toString()} + {isPlaying.toString()}
-      </Text>
+      </Text> */}
       <PlaylistModal
         showPlaylistModal={showPlaylistModal}
         onData={turnOffModal}
@@ -331,9 +337,15 @@ const MusicController = ({ idMusicClick }) => {
 export default MusicController;
 
 const styles = StyleSheet.create({
+  songInfo: {
+    height: 80,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    alignItems: "center",
+  },
   controllerContainer: {
     height: 80,
-    backgroundColor: "#ccc",
+    // backgroundColor: "#ccc",
     justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "row",
