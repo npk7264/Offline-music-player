@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
@@ -30,9 +31,13 @@ const Recent = () => {
     }
   };
 
+  // refesh khi nhấn vào tab
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     readRecent();
-  }, [listRecent]);
+    // console.log("refresh RECENT PAGE");
+  }, [isFocused]);
 
   // lọc bài hát phát gần đây
   const recentData = listRecent.map((item) => {
@@ -59,11 +64,7 @@ const Recent = () => {
           paddingHorizontal: 20,
         }}
       >
-        <Text
-          style={{ fontSize: 30, fontWeight: "500" }}
-        >
-          Bài hát gần đây
-        </Text>
+        <Text style={{ fontSize: 30, fontWeight: "500" }}>Bài hát gần đây</Text>
       </View>
 
       {/* Danh sách bài hát */}

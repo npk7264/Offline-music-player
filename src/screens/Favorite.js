@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
@@ -29,10 +30,13 @@ const Favorite = () => {
       alert("Failed to fetch the input from storage");
     }
   };
+  // refesh khi nhấn vào tab
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     readFavorite();
-  }, [favoriteList]);
+    // console.log("refresh FAVORITE PAGE");
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

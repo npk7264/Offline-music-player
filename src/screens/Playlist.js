@@ -94,6 +94,7 @@ const Playlist = () => {
 
   useEffect(() => {
     readPlaylist();
+    // console.log("refresh PLAYLIST PAGE");
   }, [isFocused]);
 
   return (
