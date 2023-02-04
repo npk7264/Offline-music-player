@@ -15,9 +15,12 @@ const SongItem = ({ info, screen, playlist }) => {
   const saveSongToPlaylist = async () => {
     try {
       if (songInPlaylist.includes(info.id) == false) {
+        const value = await AsyncStorage.getItem(playlist);
+        if (value !== null) var json = JSON.parse(value);
+        else var json = [];
         await AsyncStorage.setItem(
           playlist,
-          JSON.stringify([...songInPlaylist, info.id])
+          JSON.stringify([...json, info.id])
         );
         alert("Đã thêm bài hát vào playlist");
       } else alert("Bài hát đã có trong playlist này");
