@@ -104,9 +104,12 @@ const DetailPlaylist = ({ route }) => {
     };
   });
 
+  // refesh khi nhấn vào tab
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     readSongFromPlaylist();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     readSongFromPlaylist();
