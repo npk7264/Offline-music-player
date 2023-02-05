@@ -5,12 +5,14 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
-import SongItem from "../components/SongItem";
+// import SongItem from "../components/SongItem";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,6 +21,52 @@ const FAVORITE = "FAVORITE";
 
 const Favorite = () => {
   const [favoriteList, setFavoriteList] = useState([]);
+  const navigation = useNavigation();
+
+  // component songitem
+  const SongItem = ({ info }) => {
+    return (
+      <TouchableOpacity
+        style={{
+          width: "100%",
+          height: 60,
+          paddingTop: 5,
+          paddingHorizontal: 20,
+          justifyContent: "space-around",
+        }}
+        // sự kiện nhấn để nghe
+        onPress={() => {
+          navigation.navigate("Player", { info });
+        }}
+        // sự kiện nhấn giữ để xóa
+        onLongPress={() => {
+          Alert.alert("XÓA BÀI HÁT", "Bạn muốn xóa bài hát khỏi favorite?", [
+            {
+              text: "Không",
+              onPress: () => console.log("Cancelled"),
+            },
+            {
+              text: "OK",
+              onPress: () => deleteSong(info.id),
+            },
+          ]);
+        }}
+      >
+        <View
+          style={{
+            height: "100%",
+            borderBottomWidth: 0.5,
+            borderColor: "#ccc",
+          }}
+        >
+          <Text style={{ fontSize: 18 }} numberOfLines={1}>
+            {info.name}
+          </Text>
+          <Text style={{ fontSize: 16, color: "gray" }}>{info.singer}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const readFavorite = async () => {
     try {
@@ -32,6 +80,25 @@ const Favorite = () => {
   };
   // refesh khi nhấn vào tab
   const isFocused = useIsFocused();
+
+  // xóa bài hát khỏi danh sách phát
+  const deleteSong = async (item) => {
+    try {
+      const newFavoriteList = favoriteList.filter((i) => i !== item);
+      await AsyncStorage.setItem(FAVORITE, JSON.stringify(newFavoriteList));
+      setFavoriteList(newFavoriteList);
+    } catch (e) {
+      Alert.alert("Failed to delete the item from the FAVORITE");
+    }
+  };
+
+  const favoriteData = favoriteList.map((item) => {
+    return {
+      id: item,
+      name: songData[item].name,
+      singer: songData[item].singer,
+    };
+  });
 
   useEffect(() => {
     readFavorite();
@@ -63,9 +130,7 @@ const Favorite = () => {
       <FlatList
         style={{ flex: 1 }}
         // lọc bài hát yêu thích từ songData
-        data={songData.filter((item) => {
-          return favoriteList.includes(item.id);
-        })}
+        data={favoriteData}
         renderItem={({ item }) => <SongItem info={item} />}
         keyExtractor={(item) => item.id}
       />
