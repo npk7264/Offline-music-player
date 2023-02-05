@@ -16,6 +16,7 @@ import SearchBar from "../components/SearchBar";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button } from "react-native-web";
 
 const FAVORITE = "FAVORITE";
 
@@ -40,16 +41,20 @@ const Favorite = () => {
         }}
         // sự kiện nhấn giữ để xóa
         onLongPress={() => {
-          Alert.alert("XÓA BÀI HÁT", "Bạn muốn xóa bài hát khỏi favorite?", [
-            {
-              text: "Không",
-              onPress: () => console.log("Cancelled"),
-            },
-            {
-              text: "OK",
-              onPress: () => deleteSong(info.id),
-            },
-          ]);
+          Alert.alert(
+            "XÓA BÀI HÁT",
+            "Bạn muốn xóa bài hát khỏi danh sách yêu thích?",
+            [
+              {
+                text: "Không",
+                onPress: () => console.log("Cancelled"),
+              },
+              {
+                text: "OK",
+                onPress: () => deleteSong(info.id),
+              },
+            ]
+          );
         }}
       >
         <View
@@ -87,6 +92,16 @@ const Favorite = () => {
       const newFavoriteList = favoriteList.filter((i) => i !== item);
       await AsyncStorage.setItem(FAVORITE, JSON.stringify(newFavoriteList));
       setFavoriteList(newFavoriteList);
+    } catch (e) {
+      Alert.alert("Failed to delete the item from the FAVORITE");
+    }
+  };
+
+  // Xoá tất cả bài hát khỏi danh sách yêu thích
+  const deleteAllSongFromFavorite = async () => {
+    try {
+      await AsyncStorage.setItem(FAVORITE, JSON.stringify([]));
+      setFavoriteList([]);
     } catch (e) {
       Alert.alert("Failed to delete the item from the FAVORITE");
     }
@@ -134,6 +149,45 @@ const Favorite = () => {
         renderItem={({ item }) => <SongItem info={item} />}
         keyExtractor={(item) => item.id}
       />
+      {/* <View>
+        <Button
+          onPress={() => {
+            console.log("xoas tat ca");
+          }}
+          title="Learn More"
+          color="#841584"
+          accessibilityLabel="Learn more about this purple button"
+        />
+      </View> */}
+      <View
+        style={{
+          height: 60,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{ fontSize: 24, color: "gray" }}
+          onPress={() => {
+            Alert.alert(
+              "XÓA BÀI HÁT",
+              "Bạn muốn xóa tất cả bài hát khỏi danh sách yêu thích?",
+              [
+                {
+                  text: "Không",
+                  onPress: () => console.log("Cancelled"),
+                },
+                {
+                  text: "OK",
+                  onPress: () => deleteAllSongFromFavorite(),
+                },
+              ]
+            );
+          }}
+        >
+          Xoá tất cả
+        </Text>
+      </View>
     </SafeAreaView>
   );
 };
