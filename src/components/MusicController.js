@@ -322,7 +322,11 @@ const MusicController = ({ idMusicClick }) => {
         <TouchableOpacity
           style={styles.controllerItem}
           onPress={
-            status?.positionMillis <= 1000 ? previousSong : playSoundFirstTime
+            status?.positionMillis <= 1000
+              ? previousSong
+              : isPlaying
+              ? playSoundFirstTime
+              : replaySoundPause
           }
         >
           <Entypo name="controller-jump-to-start" size={35} color="#333" />

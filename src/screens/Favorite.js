@@ -145,7 +145,7 @@ const Favorite = () => {
         style={{ flex: 1 }}
         // lọc bài hát yêu thích từ songData
         data={favoriteData}
-        renderItem={({ item }) => <SongItem info={item} screen="FAVORITE" />}
+        renderItem={({ item }) => <SongItem info={item} />}
         keyExtractor={(item) => item.id}
       />
       {/* <View>
