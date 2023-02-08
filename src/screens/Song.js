@@ -11,6 +11,7 @@ import React from "react";
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
 import { songData } from "../../data/songData";
+import PlayerMini from "../components/PlayerMini";
 
 const Song = () => {
   return (
@@ -38,7 +39,15 @@ const Song = () => {
         renderItem={({ item }) => <SongItem info={item} songdata={songData} />}
         keyExtractor={(item) => item.id}
       />
+      <View style={{
+        width: "100%",
+        height: 60,
+        backgroundColor: "#ccc",
+        justifyContent: "center",
+        paddingHorizontal: 20,
+      }}><PlayerMini></PlayerMini></View>
     </SafeAreaView>
+
   );
 };
 
