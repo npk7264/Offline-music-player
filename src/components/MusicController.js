@@ -33,22 +33,18 @@ const MusicController = ({ idMusicClick, songdata }) => {
   };
 
   // hàm chuyển đổi định dạng thời gian
-  const convertTime = (minutes) => {
-    if (minutes) {
-      const hrs = minutes / 60;
-      const minute = hrs.toString().split(".")[0];
-      const percent = parseInt(hrs.toString().split(".")[1].slice(0, 2));
-      const sec = Math.ceil((60 * percent) / 100);
-      if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec}`;
-      if (sec == 60)
-        return parseInt(minute) + 1 < 10
-          ? `0${parseInt(minute) + 1}:00`
-          : `${parseInt(minute) + 1}:00`;
-      if (parseInt(minute) < 10) return `0${minute}:${sec}`;
-      if (sec < 10) return `${minute}:0${sec}`;
-      return `${minute}:${sec}`;
-    }
-    return `00:00`;
+  const convertTime = (milliseconds) => {
+    //const hours = Math.floor(milliseconds / 3600000);
+    const minute = Math.floor((milliseconds % 3600000) / 60000);
+    const sec = Math.floor(((milliseconds % 360000) % 60000) / 1000);
+    if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec}`;
+    if (sec == 60)
+      return parseInt(minute) + 1 < 10
+        ? `0${parseInt(minute) + 1}:00`
+        : `${parseInt(minute) + 1}:00`;
+    if (parseInt(minute) < 10) return `0${minute}:${sec}`;
+    if (sec < 10) return `${minute}:0${sec}`;
+    return `${minute}:${sec}`;
   };
 
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
@@ -57,7 +53,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
       songdata[index].uri,
       {},
       (status) => {
-        const curr = convertTime(status?.positionMillis / 1000);
+        const curr = convertTime(status?.positionMillis);
         setCurrentTime(curr);
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
@@ -91,7 +87,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
       songdata[index].uri,
       {},
       (status) => {
-        const curr = convertTime(status?.positionMillis / 1000);
+        const curr = convertTime(status?.positionMillis);
         setCurrentTime(curr);
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
@@ -203,9 +199,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
   useEffect(() => {
     return sound
       ? () => {
-          console.log("SOUND has CHANGED");
-          sound.unloadAsync();
-        }
+        console.log("SOUND has CHANGED");
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
@@ -215,7 +211,6 @@ const MusicController = ({ idMusicClick, songdata }) => {
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
     readFavorite();
-
     saveRecent();
   }, [index]);
 
@@ -249,9 +244,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
           onValueChange={(value) => {
-            setCurrentTime(
-              convertTime(Math.floor(value * durationTime) / 1000)
-            );
+            // setCurrentTime(
+            //   convertMillisecondsToHoursMinutesSeconds(Math.floor(value * durationTime))
+            // );
             setPosTime(Math.floor(value * durationTime));
           }}
           onSlidingComplete={async (value) => {
@@ -261,7 +256,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{currentTime}</Text>
           <Text style={styles.progressLabelText}>
-            {convertTime(status?.durationMillis / 1000)}
+            {convertTime(status?.durationMillis)}
           </Text>
         </View>
       </View>
