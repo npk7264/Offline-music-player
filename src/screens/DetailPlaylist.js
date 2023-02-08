@@ -23,7 +23,7 @@ const DetailPlaylist = ({ route }) => {
   const navigation = useNavigation();
 
   // component songitem
-  const SongItem = ({ info }) => {
+  const SongItem = ({ info, songdata }) => {
     return (
       <TouchableOpacity
         style={{
@@ -35,7 +35,7 @@ const DetailPlaylist = ({ route }) => {
         }}
         // sự kiện nhấn để nghe
         onPress={() => {
-          navigation.navigate("Player", { info });
+          navigation.navigate("Player", { info, songdata });
         }}
         // sự kiện nhấn giữ để xóa
         onLongPress={() => {
@@ -101,6 +101,7 @@ const DetailPlaylist = ({ route }) => {
       id: item,
       name: songData[item].name,
       singer: songData[item].singer,
+      uri: songData[item].uri,
     };
   });
 
@@ -160,7 +161,9 @@ const DetailPlaylist = ({ route }) => {
       {/* Danh sách bài hát */}
       <FlatList
         data={playlistData}
-        renderItem={({ item }) => <SongItem info={item} />}
+        renderItem={({ item }) => (
+          <SongItem info={item} songdata={playlistData} />
+        )}
         keyExtractor={(item) => item.id}
       />
       {/* SongModal */}
