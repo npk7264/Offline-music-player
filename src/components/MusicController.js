@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
@@ -22,6 +23,7 @@ const MusicController = ({ idMusicClick }) => {
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
+  const [isRepeat, setRepeat] = useState(false); //lưu trạng thái repeat
 
   const [listRecent, setListRecent] = useState([]); // lưu danh sách phát gần đây: [{id: id bài hát, time: thời gian nghe mới nhất},...]
 
@@ -63,8 +65,16 @@ const MusicController = ({ idMusicClick }) => {
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
-        if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
+        if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == false
+        )
           nextSong();
+        else if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == true
+        )
+          playSoundFirstTime();
       }
     );
     setSound(sound);
@@ -95,8 +105,16 @@ const MusicController = ({ idMusicClick }) => {
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
-        if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
+        if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == false
+        )
           nextSong();
+        else if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == true
+        )
+          playSoundFirstTime();
       }
     );
     setSound(sound);
@@ -208,7 +226,7 @@ const MusicController = ({ idMusicClick }) => {
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
     readFavorite();
-
+    setRepeat(false);
     saveRecent();
   }, [index]);
 
@@ -264,10 +282,15 @@ const MusicController = ({ idMusicClick }) => {
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
-            isPlaying ? playSoundFirstTime() : replaySoundPause();
+            // isPlaying ? playSoundFirstTime() : replaySoundPause();
+            isRepeat ? setRepeat(false) : setRepeat(true);
           }}
         >
-          <Icon name="repeat" size={25} color="#333" />
+          <MaterialCommunityIcons
+            name={isRepeat ? "repeat-once" : "repeat"}
+            size={30}
+            color="#333"
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
@@ -296,8 +319,12 @@ const MusicController = ({ idMusicClick }) => {
       {/* thanh điều khiển previous, play/pause, next */}
       <View style={styles.controllerContainer}>
         {/* xử lí sự kiện khi nhấn nút Previous */}
-        <TouchableOpacity style={styles.controllerItem} onPress={previousSong}>
-          {/* <Icon name="step-backward" size={35} color="#333" /> */}
+        <TouchableOpacity
+          style={styles.controllerItem}
+          onPress={
+            status?.positionMillis <= 1000 ? previousSong : playSoundFirstTime
+          }
+        >
           <Entypo name="controller-jump-to-start" size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
@@ -321,7 +348,6 @@ const MusicController = ({ idMusicClick }) => {
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Next */}
         <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
-          {/* <Icon name="step-forward" size={35} color="#333" /> */}
           <Entypo name="controller-next" size={35} color="#333" />
         </TouchableOpacity>
       </View>
