@@ -32,7 +32,11 @@ const Player = ({ route }) => {
         <View style={styles.imagePlayer}></View>
       </View>
       <MusicController
-        idMusicClick={playlist.indexOf(song)}
+        idMusicClick={playlist
+          .map((item) => {
+            return item.id;
+          })
+          .indexOf(song.id)}
         songdata={playlist}
       />
     </SafeAreaView>
