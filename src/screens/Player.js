@@ -1,10 +1,20 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  StatusBar,
+  Easing,
+  FlatList,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
-
+import { Entypo } from "@expo/vector-icons";
 import BackBar from "../components/BackBar";
 import MusicController from "../components/MusicController";
+import SongItem from "../components/SongItem";
+import { songData } from "../../data/songData";
 
 // route: dữ liệu được navigate tới
 const Player = ({ route }) => {
@@ -27,7 +37,9 @@ const Player = ({ route }) => {
           alignItems: "center",
         }}
       >
-        <View style={styles.imagePlayer}></View>
+        <View style={styles.imagePlayer}>
+          {/* <Entypo name="music" size={150} color="black" /> */}
+        </View>
       </View>
 
       {/* Thanh tiến trình phát nhạc */}
@@ -56,6 +68,11 @@ const Player = ({ route }) => {
 
       {/* Thanh điều khiển, truyền vào id của bài hát click vào */}
       <MusicController idMusicClick={route.params.info.id} />
+      <FlatList style={{borderWidth: 1, borderColor: "gray"}}
+        data={songData}
+        renderItem={({ item }) => <SongItem info={item} />}
+        keyExtractor={(item) => item.id}
+      />
     </SafeAreaView>
   );
 };
@@ -83,6 +100,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#4D8D6E",
     alignSelf: "center",
     borderRadius: 250 / 2,
+    justifyContent: "center",
+    alignItems: "center",
   },
   progressBar: {
     width: 350,

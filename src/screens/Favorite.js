@@ -16,7 +16,6 @@ import SearchBar from "../components/SearchBar";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button } from "react-native-web";
 
 const FAVORITE = "FAVORITE";
 
@@ -86,7 +85,7 @@ const Favorite = () => {
   // refesh khi nhấn vào tab
   const isFocused = useIsFocused();
 
-  // xóa bài hát khỏi danh sách phát
+  // xóa bài hát khỏi danh sách yêu thích
   const deleteSong = async (item) => {
     try {
       const newFavoriteList = favoriteList.filter((i) => i !== item);
@@ -146,7 +145,7 @@ const Favorite = () => {
         style={{ flex: 1 }}
         // lọc bài hát yêu thích từ songData
         data={favoriteData}
-        renderItem={({ item }) => <SongItem info={item} />}
+        renderItem={({ item }) => <SongItem info={item} screen="FAVORITE" />}
         keyExtractor={(item) => item.id}
       />
       {/* <View>
