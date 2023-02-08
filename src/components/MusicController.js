@@ -11,7 +11,7 @@ import PlaylistModal from "./PlaylistModal";
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
 
-const MusicController = ({ idMusicClick }) => {
+const MusicController = ({ idMusicClick, songdata }) => {
   const [isPlaying, setIsPlaying] = useState(true); // nhạc đang phát/ tạm dừng
   const [sound, setSound] = useState(); // lưu obj nhạc
   const [status, setStatus] = useState(); // lưu trạng thái nhạc
@@ -54,7 +54,7 @@ const MusicController = ({ idMusicClick }) => {
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
   const playSoundFirstTime = async () => {
     const { sound, status } = await Audio.Sound.createAsync(
-      songData[index].uri,
+      songdata[index].uri,
       {},
       (status) => {
         const curr = convertTime(status?.positionMillis / 1000);
@@ -62,8 +62,10 @@ const MusicController = ({ idMusicClick }) => {
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
-        if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
-          nextSong();
+        if (status?.positionMillis / 1000 == status?.durationMillis / 1000) {
+          if (songdata.length == 1) playSoundFirstTime();
+          else nextSong();
+        }
       }
     );
     setSound(sound);
@@ -86,7 +88,7 @@ const MusicController = ({ idMusicClick }) => {
   // sự kiện replay nhạc (khi tạm dừng)
   const replaySoundPause = async () => {
     const { sound, status } = await Audio.Sound.createAsync(
-      songData[index].uri,
+      songdata[index].uri,
       {},
       (status) => {
         const curr = convertTime(status?.positionMillis / 1000);
@@ -94,8 +96,10 @@ const MusicController = ({ idMusicClick }) => {
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
-        if (status?.positionMillis / 1000 == status?.durationMillis / 1000)
-          nextSong();
+        if (status?.positionMillis / 1000 == status?.durationMillis / 1000) {
+          if (songdata.length == 1) playSoundFirstTime();
+          else nextSong();
+        }
       }
     );
     setSound(sound);
@@ -104,11 +108,11 @@ const MusicController = ({ idMusicClick }) => {
   };
   // thao tác tới bài hát trước đó
   const previousSong = () => {
-    setIndex(index - 1 >= 0 ? index - 1 : songData.length - 1);
+    setIndex(index - 1 >= 0 ? index - 1 : songdata.length - 1);
   };
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
-    setIndex(index + 1 < songData.length ? index + 1 : 0);
+    setIndex(index + 1 < songdata.length ? index + 1 : 0);
   };
   // sự kiện di chuyển seekbar
   const scrollSlider = async (value) => {
@@ -125,7 +129,7 @@ const MusicController = ({ idMusicClick }) => {
     try {
       await AsyncStorage.setItem(
         FAVORITE,
-        JSON.stringify([...listLike, index])
+        JSON.stringify([...listLike, songdata[index].id])
       );
       // alert("Data successfully saved");
     } catch (e) {
@@ -138,7 +142,7 @@ const MusicController = ({ idMusicClick }) => {
         FAVORITE,
         JSON.stringify(
           listLike.filter((item) => {
-            return item !== index;
+            return item !== songdata[index].id;
           })
         )
       );
@@ -152,7 +156,7 @@ const MusicController = ({ idMusicClick }) => {
       const value = await AsyncStorage.getItem(FAVORITE);
       if (value !== null && value !== []) {
         setListLike(JSON.parse(value));
-        setLike(JSON.parse(value).includes(index));
+        setLike(JSON.parse(value).includes(songdata[index].id));
       }
     } catch (e) {
       alert("Failed to fetch the input from storage");
@@ -170,17 +174,21 @@ const MusicController = ({ idMusicClick }) => {
         // LƯU DỮ LIỆU mới
         let jsonValue = JSON.parse(value);
         // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
-        if (jsonValue.includes(index)) {
+        if (jsonValue.includes(songdata[index].id)) {
           jsonValue = jsonValue.filter((item) => {
-            return item != index;
+            return item != songdata[index].id;
           });
         }
         // lưu
         await AsyncStorage.setItem(
           RECENT,
-          JSON.stringify([index, ...jsonValue])
+          JSON.stringify([songdata[index].id, ...jsonValue])
         );
-      } else await AsyncStorage.setItem(RECENT, JSON.stringify([index]));
+      } else
+        await AsyncStorage.setItem(
+          RECENT,
+          JSON.stringify([songdata[index].id])
+        );
     } catch (e) {
       alert("Failed to fetch the RECENT from storage");
     }
@@ -220,9 +228,9 @@ const MusicController = ({ idMusicClick }) => {
     <View>
       {/* Thông tin nhạc */}
       <View style={styles.songInfo}>
-        <Text style={{ fontSize: 25 }}>{songData[index].name}</Text>
+        <Text style={{ fontSize: 25 }}>{songdata[index].name}</Text>
         <Text style={{ fontSize: 20, color: "gray" }}>
-          {songData[index].singer}
+          {songdata[index].singer}
         </Text>
       </View>
       <View
@@ -322,13 +330,13 @@ const MusicController = ({ idMusicClick }) => {
           <Icon name="step-forward" size={35} color="#fff" />
         </TouchableOpacity>
       </View>
-      {/* <Text>
+      <Text>
         {index.toString()} + {isPlaying.toString()}
-      </Text> */}
+      </Text>
       <PlaylistModal
         showPlaylistModal={showPlaylistModal}
         onData={turnOffModal}
-        songID={index}
+        songID={songdata[index].id}
       />
     </View>
   );

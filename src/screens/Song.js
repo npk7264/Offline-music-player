@@ -35,7 +35,7 @@ const Song = () => {
       {/* Danh sách bài hát */}
       <FlatList
         data={songData}
-        renderItem={({ item }) => <SongItem info={item} />}
+        renderItem={({ item }) => <SongItem info={item} songdata={songData} />}
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>

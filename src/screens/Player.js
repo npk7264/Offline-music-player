@@ -8,6 +8,8 @@ import MusicController from "../components/MusicController";
 
 // route: dữ liệu được navigate tới
 const Player = ({ route }) => {
+  const playlist = route.params.songdata;
+  const song = route.params.info;
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar></StatusBar>
@@ -29,33 +31,14 @@ const Player = ({ route }) => {
       >
         <View style={styles.imagePlayer}></View>
       </View>
-
-      {/* Thanh tiến trình phát nhạc */}
-      {/* <View
-        style={{
-          height: 100,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Slider
-          style={styles.progressBar}
-          value={10}
-          minimumValue={0}
-          maximumValue={100}
-          thumbTintColor="red"
-          minimumTrackTintColor="#000"
-          maximumTrackTintColor="#000"
-          onSlidingComplete={() => {}}
-        ></Slider>
-        <View style={styles.progressLevelDuration}>
-          <Text style={styles.progressLabelText}>00:00</Text>
-          <Text style={styles.progressLabelText}>00:00</Text>
-        </View>
-      </View> */}
-
-      {/* Thanh điều khiển, truyền vào id của bài hát click vào */}
-      <MusicController idMusicClick={route.params.info.id} />
+      <MusicController
+        idMusicClick={playlist
+          .map((item) => {
+            return item.id;
+          })
+          .indexOf(song.id)}
+        songdata={playlist}
+      />
     </SafeAreaView>
   );
 };
