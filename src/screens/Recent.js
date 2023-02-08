@@ -45,6 +45,7 @@ const Recent = () => {
       id: item,
       name: songData[item].name,
       singer: songData[item].singer,
+      uri: songData[item].uri,
     };
   });
 
@@ -71,7 +72,9 @@ const Recent = () => {
       <FlatList
         style={{ flex: 1 }}
         data={recentData}
-        renderItem={({ item }) => <SongItem info={item} />}
+        renderItem={({ item }) => (
+          <SongItem info={item} songdata={recentData} />
+        )}
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>

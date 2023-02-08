@@ -24,7 +24,7 @@ const Favorite = () => {
   const navigation = useNavigation();
 
   // component songitem
-  const SongItem = ({ info }) => {
+  const SongItem = ({ info, songdata }) => {
     return (
       <TouchableOpacity
         style={{
@@ -36,7 +36,7 @@ const Favorite = () => {
         }}
         // sự kiện nhấn để nghe
         onPress={() => {
-          navigation.navigate("Player", { info });
+          navigation.navigate("Player", { info, songdata });
         }}
         // sự kiện nhấn giữ để xóa
         onLongPress={() => {
@@ -111,6 +111,7 @@ const Favorite = () => {
       id: item,
       name: songData[item].name,
       singer: songData[item].singer,
+      uri: songData[item].uri,
     };
   });
 
@@ -145,7 +146,9 @@ const Favorite = () => {
         style={{ flex: 1 }}
         // lọc bài hát yêu thích từ songData
         data={favoriteData}
-        renderItem={({ item }) => <SongItem info={item} />}
+        renderItem={({ item }) => (
+          <SongItem info={item} songdata={favoriteData} />
+        )}
         keyExtractor={(item) => item.id}
       />
       {/* <View>
