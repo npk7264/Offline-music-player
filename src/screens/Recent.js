@@ -7,6 +7,10 @@ import {
   View,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
+=======
+import { useIsFocused } from "@react-navigation/native";
+>>>>>>> e93a8d1f3b9cedae0bb20efff51cd006ac69fea4
 
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
@@ -30,9 +34,19 @@ const Recent = () => {
     }
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     readRecent();
   }, [listRecent]);
+=======
+  // refesh khi nhấn vào tab
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    readRecent();
+    // console.log("refresh RECENT PAGE");
+  }, [isFocused]);
+>>>>>>> e93a8d1f3b9cedae0bb20efff51cd006ac69fea4
 
   // lọc bài hát phát gần đây
   const recentData = listRecent.map((item) => {
@@ -40,6 +54,10 @@ const Recent = () => {
       id: item,
       name: songData[item].name,
       singer: songData[item].singer,
+<<<<<<< HEAD
+=======
+      uri: songData[item].uri,
+>>>>>>> e93a8d1f3b9cedae0bb20efff51cd006ac69fea4
     };
   });
 
@@ -73,7 +91,13 @@ const Recent = () => {
       <FlatList
         style={{ flex: 1 }}
         data={recentData}
+<<<<<<< HEAD
         renderItem={({ item }) => <SongItem info={item} />}
+=======
+        renderItem={({ item }) => (
+          <SongItem info={item} songdata={recentData} />
+        )}
+>>>>>>> e93a8d1f3b9cedae0bb20efff51cd006ac69fea4
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
