@@ -347,9 +347,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
           <Icon name="step-forward" size={35} color="#333" />
         </TouchableOpacity>
       </View>
-      <Text>
+      {/* <Text>
         {index.toString()} + {isPlaying.toString()} + {isRepeat.toString()}
-      </Text>
+      </Text> */}
       <PlaylistModal
         showPlaylistModal={showPlaylistModal}
         onData={turnOffModal}
