@@ -9,33 +9,29 @@ const PlayerMini = () => {
         // onPress={() => { Alert.alert("clicked") }}
         >
             <Slider
-
                 disabled={true}
                 value={0.15}
             ></Slider>
-            <Text style={{ fontSize: 10, color: "blue" }}>Nang am xa dan</Text>
-            <View style={{ flex: 1, flexDirection: "row" }}>
-                <TouchableOpacity
-                    style={{ flex: 1 }}
-                    onPress={() => {
-                        setPlaying(!playing);
-                    }}
-                >
-                    <Icon
-                        name={playing ? "play" : "pause"}
-                        size={20}
-                        color="#fff"
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{ flex: 1 }}
-                >
-                    <Icon
-                        name={"step-forward"}
-                        size={20}
-                        color="#fff"
-                    />
-                </TouchableOpacity>
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 2, marginLeft: 15 }}>
+                    <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>Nang am xa dan</Text>
+                    <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>Son Tung MTP</Text>
+                </View>
+
+                <View style={styles.controllerContainer}>
+                    <TouchableOpacity
+                        style={styles.controllerItem}
+                        onPress={() => {
+                            setPlaying(!playing);
+                        }}
+                    >
+                        <Icon
+                            name={playing ? "play" : "pause"}
+                            size={25}
+                            color="#fff"
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
         </TouchableOpacity >
     );
@@ -46,8 +42,25 @@ export default PlayerMini;
 
 const styles = StyleSheet.create({
     view: {
-        backgroundColor: 'red',
+        backgroundColor: '#ccc',
+        height: 90,
+    },
+    controllerContainer: {
+        flex: 1,
+        //backgroundColor: "blue",
+        justifyContent: 'center',
+        alignItems: "center",
+        // flexDirection: "row",
+    },
+    controllerItem: {
+        width: 50,
         height: 50,
-
+        borderRadius: 100,
+        backgroundColor: "#333",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    song: {
+        fontSize: 30,
     },
 });
