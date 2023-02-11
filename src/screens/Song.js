@@ -39,13 +39,7 @@ const Song = () => {
         renderItem={({ item }) => <SongItem info={item} songdata={songData} />}
         keyExtractor={(item) => item.id}
       />
-      <View style={{
-        width: "100%",
-        height: 60,
-        backgroundColor: "#ccc",
-        justifyContent: "center",
-        paddingHorizontal: 20,
-      }}><PlayerMini></PlayerMini></View>
+      <PlayerMini></PlayerMini>
     </SafeAreaView>
 
   );

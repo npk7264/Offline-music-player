@@ -244,9 +244,6 @@ const MusicController = ({ idMusicClick, songdata }) => {
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
           onValueChange={(value) => {
-            // setCurrentTime(
-            //   convertMillisecondsToHoursMinutesSeconds(Math.floor(value * durationTime))
-            // );
             setPosTime(Math.floor(value * durationTime));
           }}
           onSlidingComplete={async (value) => {
