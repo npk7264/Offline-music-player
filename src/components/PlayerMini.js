@@ -60,7 +60,4 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    song: {
-        fontSize: 30,
-    },
 });

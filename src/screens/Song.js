@@ -12,6 +12,7 @@ import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
 import { songData } from "../../data/songData";
 import PlayerMini from "../components/PlayerMini";
+import Player from "./Player";
 
 const Song = () => {
   return (
@@ -39,7 +40,9 @@ const Song = () => {
         renderItem={({ item }) => <SongItem info={item} songdata={songData} />}
         keyExtractor={(item) => item.id}
       />
-      <PlayerMini></PlayerMini>
+
+      {/* <PlayerMini></PlayerMini> */}
+
     </SafeAreaView>
 
   );
