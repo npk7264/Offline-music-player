@@ -12,7 +12,7 @@ const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
 
 const MusicController = ({ idMusicClick, songdata }) => {
-  const context = useContext(AudioContext);//
+  //const context = useContext(AudioContext);//
 
   const [isPlaying, setIsPlaying] = useState(true); // nhạc đang phát/ tạm dừng
   const [sound, setSound] = useState(); // lưu obj nhạc
