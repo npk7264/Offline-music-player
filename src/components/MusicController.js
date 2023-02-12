@@ -5,13 +5,15 @@ import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import AudioContext from "../context/AudioProvider";
 import PlaylistModal from "./PlaylistModal";
 
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
 
 const MusicController = ({ idMusicClick, songdata }) => {
+  const context = useContext(AudioContext);//
+
   const [isPlaying, setIsPlaying] = useState(true); // nhạc đang phát/ tạm dừng
   const [sound, setSound] = useState(); // lưu obj nhạc
   const [status, setStatus] = useState(); // lưu trạng thái nhạc
