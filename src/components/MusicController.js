@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
 import { songData } from "../../data/songData";
@@ -22,12 +23,11 @@ const MusicController = ({ idMusicClick, songdata }) => {
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
+  const [isRepeat, setRepeat] = useState(false); //lưu trạng thái repeat
 
   const [listRecent, setListRecent] = useState([]); // lưu danh sách phát gần đây: [{id: id bài hát, time: thời gian nghe mới nhất},...]
 
   const [showPlaylistModal, setShowPlaylistModal] = useState(false); // lưu trạng thái ẩn hiện của bảng chọn playlist
-
-  const [isRepeat, setRepeat] = useState(false);
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
@@ -65,10 +65,16 @@ const MusicController = ({ idMusicClick, songdata }) => {
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
-        if (status?.positionMillis / 1000 == status?.durationMillis / 1000) {
-          if (songdata.length == 1) playSoundFirstTime();
-          else nextSong();
-        }
+        if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == false
+        )
+          nextSong();
+        else if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == true
+        )
+          playSoundFirstTime();
       }
     );
     setSound(sound);
@@ -99,10 +105,16 @@ const MusicController = ({ idMusicClick, songdata }) => {
         setDurationTime(status?.durationMillis);
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
-        if (status?.positionMillis / 1000 == status?.durationMillis / 1000) {
-          if (songdata.length == 1) playSoundFirstTime();
-          else nextSong();
-        }
+        if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == false
+        )
+          nextSong();
+        else if (
+          status?.positionMillis / 1000 == status?.durationMillis / 1000 &&
+          isRepeat == true
+        )
+          playSoundFirstTime();
       }
     );
     setSound(sound);
@@ -116,11 +128,6 @@ const MusicController = ({ idMusicClick, songdata }) => {
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
     setIndex(index + 1 < songdata.length ? index + 1 : 0);
-  };
-  // lặp bài hát
-  const repeatSong = async (flag) => {
-    const status = await sound.setIsLoopingAsync(flag);
-    setStatus(status);
   };
   // sự kiện di chuyển seekbar
   const scrollSlider = async (value) => {
@@ -222,11 +229,8 @@ const MusicController = ({ idMusicClick, songdata }) => {
     console.log("MOVE to NEXT or PREVIOUS");
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
-
     readFavorite();
     saveRecent();
-
-    setRepeat(false);
   }, [index]);
 
   // xử lí trạng thái trả về từ PlaylistModal
@@ -282,9 +286,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
             // isPlaying ? playSoundFirstTime() : replaySoundPause();
-            const flag = !isRepeat;
-            setRepeat(flag);
-            repeatSong(flag);
+            isRepeat ? setRepeat(false) : setRepeat(true);
           }}
         >
           <MaterialCommunityIcons
@@ -320,8 +322,17 @@ const MusicController = ({ idMusicClick, songdata }) => {
       {/* thanh điều khiển previous, play/pause, next */}
       <View style={styles.controllerContainer}>
         {/* xử lí sự kiện khi nhấn nút Previous */}
-        <TouchableOpacity style={styles.controllerItem} onPress={previousSong}>
-          <Icon name="step-backward" size={35} color="#333" />
+        <TouchableOpacity
+          style={styles.controllerItem}
+          onPress={
+            status?.positionMillis <= 1000
+              ? previousSong
+              : isPlaying
+              ? playSoundFirstTime
+              : replaySoundPause
+          }
+        >
+          <Entypo name="controller-jump-to-start" size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
         <TouchableOpacity
@@ -344,12 +355,12 @@ const MusicController = ({ idMusicClick, songdata }) => {
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Next */}
         <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
-          <Icon name="step-forward" size={35} color="#333" />
+          <Entypo name="controller-next" size={35} color="#333" />
         </TouchableOpacity>
       </View>
-      <Text>
-        {index.toString()} + {isPlaying.toString()} + {isRepeat.toString()}
-      </Text>
+      {/* <Text>
+        {index.toString()} + {isPlaying.toString()}
+      </Text> */}
       <PlaylistModal
         showPlaylistModal={showPlaylistModal}
         onData={turnOffModal}
@@ -370,7 +381,7 @@ const styles = StyleSheet.create({
   },
   controllerContainer: {
     height: 80,
-    // backgroundColor: "#ccc",
+    ///backgroundColor: "#ccc",
     justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "row",
@@ -378,7 +389,7 @@ const styles = StyleSheet.create({
   controllerItem: {
     width: 50,
     height: 50,
-    // backgroundColor: "#333",
+    //backgroundColor: "#333",
     justifyContent: "center",
     alignItems: "center",
   },
