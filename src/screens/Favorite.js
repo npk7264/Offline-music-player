@@ -16,6 +16,7 @@ import SearchBar from "../components/SearchBar";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button } from "react-native-web";
 
 const FAVORITE = "FAVORITE";
 
@@ -85,7 +86,7 @@ const Favorite = () => {
   // refesh khi nhấn vào tab
   const isFocused = useIsFocused();
 
-  // xóa bài hát khỏi danh sách yêu thích
+  // xóa bài hát khỏi danh sách phát
   const deleteSong = async (item) => {
     try {
       const newFavoriteList = favoriteList.filter((i) => i !== item);
@@ -142,6 +143,17 @@ const Favorite = () => {
       </View>
 
       {/* Danh sách bài hát */}
+      {favoriteData.length === 0 ? (
+        <View
+          style={{
+            height: 60,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ fontSize: 24, color: "gray" }}>Chưa có dữ liệu</Text>
+        </View>
+      ) : null}
       <FlatList
         style={{ flex: 1 }}
         // lọc bài hát yêu thích từ songData
@@ -151,45 +163,37 @@ const Favorite = () => {
         )}
         keyExtractor={(item) => item.id}
       />
-      {/* <View>
-        <Button
-          onPress={() => {
-            console.log("xoas tat ca");
-          }}
-          title="Learn More"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
-      </View> */}
-      <View
-        style={{
-          height: 60,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Text
-          style={{ fontSize: 24, color: "gray" }}
-          onPress={() => {
-            Alert.alert(
-              "XÓA BÀI HÁT",
-              "Bạn muốn xóa tất cả bài hát khỏi danh sách yêu thích?",
-              [
-                {
-                  text: "Không",
-                  onPress: () => console.log("Cancelled"),
-                },
-                {
-                  text: "OK",
-                  onPress: () => deleteAllSongFromFavorite(),
-                },
-              ]
-            );
+      {favoriteData.length !== 0 && (
+        <View
+          style={{
+            height: 60,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          Xoá tất cả
-        </Text>
-      </View>
+          <Text
+            style={{ fontSize: 24, color: "gray" }}
+            onPress={() => {
+              Alert.alert(
+                "XÓA BÀI HÁT",
+                "Bạn muốn xóa tất cả bài hát khỏi danh sách yêu thích?",
+                [
+                  {
+                    text: "Không",
+                    onPress: () => console.log("Cancelled"),
+                  },
+                  {
+                    text: "OK",
+                    onPress: () => deleteAllSongFromFavorite(),
+                  },
+                ]
+              );
+            }}
+          >
+            Xoá tất cả
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

@@ -234,7 +234,6 @@ const MusicController = ({ idMusicClick, songdata }) => {
     console.log("MOVE to NEXT or PREVIOUS");
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
-
     readFavorite();
     saveRecent();
 
