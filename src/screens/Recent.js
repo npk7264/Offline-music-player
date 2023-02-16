@@ -69,6 +69,17 @@ const Recent = () => {
       </View>
 
       {/* Danh sách bài hát */}
+      {recentData.length === 0 ? (
+        <View
+          style={{
+            height: 60,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ fontSize: 24, color: "gray" }}>Chưa có dữ liệu</Text>
+        </View>
+      ) : null}
       <FlatList
         style={{ flex: 1 }}
         data={recentData}
