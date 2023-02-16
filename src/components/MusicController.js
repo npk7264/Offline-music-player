@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
 import { songData } from "../../data/songData";
@@ -28,6 +27,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
   const [listRecent, setListRecent] = useState([]); // lưu danh sách phát gần đây: [{id: id bài hát, time: thời gian nghe mới nhất},...]
 
   const [showPlaylistModal, setShowPlaylistModal] = useState(false); // lưu trạng thái ẩn hiện của bảng chọn playlist
+
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
@@ -129,6 +129,11 @@ const MusicController = ({ idMusicClick, songdata }) => {
   const nextSong = () => {
     setIndex(index + 1 < songdata.length ? index + 1 : 0);
   };
+  // lặp bài hát
+  const repeatSong = async (flag) => {
+    const status = await sound.setIsLoopingAsync(flag);
+    setStatus(status);
+  };
   // sự kiện di chuyển seekbar
   const scrollSlider = async (value) => {
     console.log("scroll");
@@ -229,8 +234,11 @@ const MusicController = ({ idMusicClick, songdata }) => {
     console.log("MOVE to NEXT or PREVIOUS");
     if (isPlaying) playSoundFirstTime();
     else replaySoundPause();
+
     readFavorite();
     saveRecent();
+
+    setRepeat(false);
   }, [index]);
 
   // xử lí trạng thái trả về từ PlaylistModal
@@ -286,7 +294,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
             // isPlaying ? playSoundFirstTime() : replaySoundPause();
-            isRepeat ? setRepeat(false) : setRepeat(true);
+            const flag = !isRepeat;
+            setRepeat(flag);
+            repeatSong(flag);
           }}
         >
           <MaterialCommunityIcons
@@ -322,17 +332,8 @@ const MusicController = ({ idMusicClick, songdata }) => {
       {/* thanh điều khiển previous, play/pause, next */}
       <View style={styles.controllerContainer}>
         {/* xử lí sự kiện khi nhấn nút Previous */}
-        <TouchableOpacity
-          style={styles.controllerItem}
-          onPress={
-            status?.positionMillis <= 1000
-              ? previousSong
-              : isPlaying
-              ? playSoundFirstTime
-              : replaySoundPause
-          }
-        >
-          <Entypo name="controller-jump-to-start" size={35} color="#333" />
+        <TouchableOpacity style={styles.controllerItem} onPress={previousSong}>
+          <Icon name="step-backward" size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
         <TouchableOpacity
@@ -355,11 +356,11 @@ const MusicController = ({ idMusicClick, songdata }) => {
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Next */}
         <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
-          <Entypo name="controller-next" size={35} color="#333" />
+          <Icon name="step-forward" size={35} color="#333" />
         </TouchableOpacity>
       </View>
       {/* <Text>
-        {index.toString()} + {isPlaying.toString()}
+        {index.toString()} + {isPlaying.toString()} + {isRepeat.toString()}
       </Text> */}
       <PlaylistModal
         showPlaylistModal={showPlaylistModal}
@@ -389,7 +390,7 @@ const styles = StyleSheet.create({
   controllerItem: {
     width: 50,
     height: 50,
-    //backgroundColor: "#333",
+    // backgroundColor: "#333",
     justifyContent: "center",
     alignItems: "center",
   },
