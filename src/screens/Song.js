@@ -13,7 +13,10 @@ import React, { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
 import { songData } from "../../data/songData";
+
 import SortModal from "../components/SortModal";
+import PlayerMini from "../components/PlayerMini";
+import Player from "./Player";
 
 const Song = () => {
   const [showSort, setShowSort] = useState(false);
@@ -110,13 +113,16 @@ const Song = () => {
         )}
         keyExtractor={(item) => item.id}
       />
+
       <SortModal
         showSort={showSort}
         Sort={Sort}
         sortOption={sortOption}
         Option={Option}
       />
+
     </SafeAreaView>
+
   );
 };
 
