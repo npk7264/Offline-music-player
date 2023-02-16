@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
 import { songData } from "../../data/songData";
@@ -27,6 +28,8 @@ const MusicController = ({ idMusicClick, songdata }) => {
   const [listRecent, setListRecent] = useState([]); // lưu danh sách phát gần đây: [{id: id bài hát, time: thời gian nghe mới nhất},...]
 
   const [showPlaylistModal, setShowPlaylistModal] = useState(false); // lưu trạng thái ẩn hiện của bảng chọn playlist
+
+  const [isRepeat, setRepeat] = useState(false);
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
@@ -111,6 +114,11 @@ const MusicController = ({ idMusicClick, songdata }) => {
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
     setIndex(index + 1 < songdata.length ? index + 1 : 0);
+  };
+  // lặp bài hát
+  const repeatSong = async (flag) => {
+    const status = await sound.setIsLoopingAsync(flag);
+    setStatus(status);
   };
   // sự kiện di chuyển seekbar
   const scrollSlider = async (value) => {
@@ -214,6 +222,8 @@ const MusicController = ({ idMusicClick, songdata }) => {
     else replaySoundPause();
     readFavorite();
     saveRecent();
+
+    setRepeat(false);
   }, [index]);
 
   // xử lí trạng thái trả về từ PlaylistModal
@@ -265,10 +275,17 @@ const MusicController = ({ idMusicClick, songdata }) => {
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
-            isPlaying ? playSoundFirstTime() : replaySoundPause();
+            // isPlaying ? playSoundFirstTime() : replaySoundPause();
+            const flag = !isRepeat;
+            setRepeat(flag);
+            repeatSong(flag);
           }}
         >
-          <Icon name="repeat" size={25} color="#fff" />
+          <MaterialCommunityIcons
+            name={isRepeat ? "repeat-once" : "repeat"}
+            size={30}
+            color="#333"
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
@@ -278,7 +295,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
             likeState ? saveFavorite() : removeFavorite();
           }}
         >
-          <Icon name={like ? "heart" : "heart-o"} size={25} color="#fff" />
+          <Icon name={like ? "heart" : "heart-o"} size={25} color="#333" />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
@@ -290,7 +307,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
             setShowPlaylistModal(true);
           }}
         >
-          <Icon name="list-ul" size={25} color="#fff" />
+          <Icon name="list-ul" size={25} color="#333" />
         </TouchableOpacity>
       </View>
 
@@ -298,7 +315,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
       <View style={styles.controllerContainer}>
         {/* xử lí sự kiện khi nhấn nút Previous */}
         <TouchableOpacity style={styles.controllerItem} onPress={previousSong}>
-          <Icon name="step-backward" size={35} color="#fff" />
+          <Icon name="step-backward" size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
         <TouchableOpacity
@@ -316,17 +333,17 @@ const MusicController = ({ idMusicClick, songdata }) => {
           <Icon
             name={isPlaying === false ? "play" : "pause"}
             size={35}
-            color="#fff"
+            color="#333"
           />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Next */}
         <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
-          <Icon name="step-forward" size={35} color="#fff" />
+          <Icon name="step-forward" size={35} color="#333" />
         </TouchableOpacity>
       </View>
-      <Text>
-        {index.toString()} + {isPlaying.toString()}
-      </Text>
+      {/* <Text>
+        {index.toString()} + {isPlaying.toString()} + {isRepeat.toString()}
+      </Text> */}
       <PlaylistModal
         showPlaylistModal={showPlaylistModal}
         onData={turnOffModal}
@@ -355,7 +372,7 @@ const styles = StyleSheet.create({
   controllerItem: {
     width: 50,
     height: 50,
-    backgroundColor: "#333",
+    // backgroundColor: "#333",
     justifyContent: "center",
     alignItems: "center",
   },
