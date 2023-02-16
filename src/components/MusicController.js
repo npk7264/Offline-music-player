@@ -39,17 +39,20 @@ const MusicController = ({ idMusicClick, songdata }) => {
 
   // hàm chuyển đổi định dạng thời gian
   const convertTime = (milliseconds) => {
-    //const hours = Math.floor(milliseconds / 3600000);
-    const minute = Math.floor((milliseconds % 3600000) / 60000);
-    const sec = Math.floor(((milliseconds % 360000) % 60000) / 1000);
-    if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec}`;
-    if (sec == 60)
-      return parseInt(minute) + 1 < 10
-        ? `0${parseInt(minute) + 1}:00`
-        : `${parseInt(minute) + 1}:00`;
-    if (parseInt(minute) < 10) return `0${minute}:${sec}`;
-    if (sec < 10) return `${minute}:0${sec}`;
-    return `${minute}:${sec}`;
+    if (milliseconds) {
+      //const hours = Math.floor(milliseconds / 3600000);
+      const minute = Math.floor((milliseconds % 3600000) / 60000);
+      const sec = Math.floor(((milliseconds % 360000) % 60000) / 1000);
+      if (parseInt(minute) < 10 && sec < 10) return `0${minute}:0${sec}`;
+      if (sec == 60)
+        return parseInt(minute) + 1 < 10
+          ? `0${parseInt(minute) + 1}:00`
+          : `${parseInt(minute) + 1}:00`;
+      if (parseInt(minute) < 10) return `0${minute}:${sec}`;
+      if (sec < 10) return `${minute}:0${sec}`;
+      return `${minute}:${sec}`;
+    }
+    return `00:00`;
   };
 
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
@@ -209,9 +212,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
   useEffect(() => {
     return sound
       ? () => {
-        console.log("SOUND has CHANGED");
-        sound.unloadAsync();
-      }
+          console.log("SOUND has CHANGED");
+          sound.unloadAsync();
+        }
       : undefined;
   }, [sound]);
 
