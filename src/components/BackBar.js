@@ -7,7 +7,7 @@ const BackBar = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.backBar}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={{width: 80, height: "100%", justifyContent: 'center', paddingLeft: 20}}>
         <Icon name="arrow-left" size={25} color="#fff" />
       </TouchableOpacity>
     </View>
@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#4D8D6E",
     justifyContent: "center",
-    paddingHorizontal: 20,
+    //paddingHorizontal: 20,
   },
 });
