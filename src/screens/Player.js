@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Image } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
@@ -29,7 +29,12 @@ const Player = ({ route }) => {
           alignItems: "center",
         }}
       >
-        <View style={styles.imagePlayer}></View>
+        <View style={styles.imagePlayer}>
+          <Image
+            style={{ width: "100%", height: "100%" }}
+            source={require('../../assets/disc_img.png')}
+          />
+        </View>
       </View>
       <MusicController
         idMusicClick={playlist
