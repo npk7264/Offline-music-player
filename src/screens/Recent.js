@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
@@ -28,6 +29,16 @@ const Recent = () => {
       }
     } catch (e) {
       alert("Failed to fetch the RECENT from storage");
+    }
+  };
+
+  // Xoá tất cả bài hát khỏi danh sách yêu thích
+  const deleteAllSongFromRecent = async () => {
+    try {
+      await AsyncStorage.setItem(RECENT, JSON.stringify([]));
+      setListRecent([]);
+    } catch (e) {
+      Alert.alert("Failed to delete the item from the RECENT");
     }
   };
 
@@ -88,6 +99,37 @@ const Recent = () => {
         )}
         keyExtractor={(item) => item.id}
       />
+      {recentData.length !== 0 && (
+        <View
+          style={{
+            height: 60,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{ fontSize: 24, color: "gray" }}
+            onPress={() => {
+              Alert.alert(
+                "XÓA LỊCH SỬ NGHE",
+                "Bạn muốn xóa tất cả bài hát khỏi danh sách nghe gần đây?",
+                [
+                  {
+                    text: "Không",
+                    onPress: () => console.log("Cancelled"),
+                  },
+                  {
+                    text: "OK",
+                    onPress: () => deleteAllSongFromRecent(),
+                  },
+                ]
+              );
+            }}
+          >
+            Xoá lịch sử nghe
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
