@@ -17,7 +17,7 @@
   - B1: Tạo một thư mục (vd : CS526)
   - B2: Mở terminal và cd đến thư mục vừa tạo
   - B3: chạy lệnh sau:
-    > git clone https://github.com/npk7264/Calculator.git
+    > git clone https://github.com/npk7264/MusicApp_ReactNative.git
 
 - Cách 2: Tải code từ github
 
