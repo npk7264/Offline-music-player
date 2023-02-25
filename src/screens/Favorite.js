@@ -13,6 +13,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 // import SongItem from "../components/SongItem";
+import Title from "../components/Title";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -128,19 +129,7 @@ const Favorite = () => {
       <SearchBar />
 
       {/* Title */}
-      <View
-        style={{
-          width: "100%",
-          height: 60,
-          backgroundColor: "#ccc",
-          justifyContent: "center",
-          paddingHorizontal: 20,
-        }}
-      >
-        <Text style={{ fontSize: 30, fontWeight: "500" }}>
-          Bài hát yêu thích
-        </Text>
-      </View>
+      <Title title={"Bài hát yêu thích"} />
 
       {/* Danh sách bài hát */}
       {favoriteData.length === 0 ? (

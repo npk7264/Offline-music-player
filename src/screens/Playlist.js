@@ -15,6 +15,7 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 // import PlaylistItem from "../components/PlaylistItem";
+import Title from "../components/Title";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -112,9 +113,7 @@ const Playlist = () => {
       <StatusBar></StatusBar>
       {/* thanh tìm kiếm */}
       <SearchBar />
-      <View style={styles.title}>
-        <Text style={{ fontSize: 30, fontWeight: "500" }}>Danh sách phát</Text>
-      </View>
+      <Title title={"Danh sách phát"} />
 
       <View style={styles.newPlaylist}>
         <TextInput

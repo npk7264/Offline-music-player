@@ -17,6 +17,7 @@ import BackBar from "../components/BackBar";
 import { songData } from "../../data/songData";
 // import SongItem from "../components/SongItem";
 import SongModal from "../components/SongModal";
+import Title from "../components/Title";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 const DetailPlaylist = ({ route }) => {
@@ -128,19 +129,7 @@ const DetailPlaylist = ({ route }) => {
       <BackBar />
 
       {/* Title */}
-      <View
-        style={{
-          width: "100%",
-          height: 60,
-          backgroundColor: "#ccc",
-          justifyContent: "center",
-          paddingHorizontal: 20,
-        }}
-      >
-        <Text style={{ fontSize: 30, fontWeight: "500" }}>
-          {route.params.name}
-        </Text>
-      </View>
+      <Title title={route.params.name} />
       {/* Thêm bài hát vào playlist */}
       <TouchableOpacity
         style={styles.newSong}
