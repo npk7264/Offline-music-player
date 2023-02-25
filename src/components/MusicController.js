@@ -8,6 +8,7 @@ import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AudioContext from "../context/AudioProvider";
 import PlaylistModal from "./PlaylistModal";
+import { Entypo } from "@expo/vector-icons";
 
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
@@ -321,7 +322,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
             setShowPlaylistModal(true);
           }}
         >
-          <Icon name="list-ul" size={25} color="#333" />
+          <Entypo name="add-to-list" size={25} color={"#333"} />
         </TouchableOpacity>
       </View>
 

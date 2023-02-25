@@ -8,31 +8,78 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Entypo } from "@expo/vector-icons";
 
 import SongItem from "../components/SongItem";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
-import Title from "../components/Title";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import { songData } from "../../data/songData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const PLAYLIST = "PLAYLIST";
 
 const Search = () => {
   const navigation = useNavigation();
 
+  const [searchContent, setSearchContent] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [playlistList, setPlaylistList] = useState([]); // danh sách playlist đã tạo
 
+  // lọc kết quả tìm kiếm
   const searchFilter = (text) => {
-    if (text) {
+    let searchText = text.trim().toUpperCase();
+    // hiển thị kết quả tìm kiếm nếu thông tin tìm kiếm khác rỗng
+    if (searchText !== "") {
       const searchData = songData.filter((item) => {
         return (
-          item.name.toString().toUpperCase().includes(text.toUpperCase()) ||
-          item.singer.toString().toUpperCase().includes(text.toUpperCase())
+          item.name.toUpperCase().includes(searchText) ||
+          item.singer.toUpperCase().includes(searchText)
         );
       });
       setSearchResult(searchData);
-    } else setSearchResult([]);
+    }
+    // thông tin tìm kiếm không hợp lệ
+    else setSearchResult([]);
   };
+
+  // lưu playlist mới vào Async Storage
+  const savePlaylist = async () => {
+    try {
+      await AsyncStorage.setItem(
+        PLAYLIST,
+        JSON.stringify([...playlistList, searchContent.trim()])
+      );
+      await AsyncStorage.setItem(
+        searchContent.trim(),
+        JSON.stringify([...searchResult].map((item) => item.id))
+      );
+      alert(`Đã tạo danh sách phát "${searchContent.trim()}" !`);
+    } catch (e) {
+      alert("Failed to save the PLAYLIST to the storage");
+    }
+  };
+  // đọc danh sách playlist từ Async Storage
+  const readPlaylist = async () => {
+    try {
+      const value = await AsyncStorage.getItem(PLAYLIST);
+      // alert(value);
+      if (value !== null) {
+        setPlaylistList(JSON.parse(value));
+      }
+    } catch (e) {
+      alert("Failed to fetch the PLAYLIST from storage");
+    }
+  };
+
+  // refesh khi nhấn vào tab
+  // const isFocused = useIsFocused();
+
+  useEffect(() => {
+    readPlaylist();
+    // console.log("refresh PLAYLIST PAGE");
+  }, []);
 
   return (
     <SafeAreaView>
@@ -44,6 +91,7 @@ const Search = () => {
           placeholder="Tìm kiếm bài hát"
           autoFocus={true}
           onChangeText={(text) => {
+            setSearchContent(text);
             searchFilter(text);
           }}
         ></TextInput>
@@ -52,13 +100,52 @@ const Search = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Title */}
-      <Title title={"Kết quả tìm kiếm"} />
+      {/* Nghe danh sách kết quả tìm kiếm */}
+      {searchResult.length !== 0 && (
+        <View
+          style={{
+            height: 60,
+            paddingHorizontal: 20,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {/* nút nghe bài hát từ danh sách tìm kiếm */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              const firstSong = searchResult[0];
+              navigation.navigate("Player", {
+                info: firstSong,
+                songdata: searchResult,
+              });
+            }}
+          >
+            <Icon name="play" size={25} color="#fff" />
+          </TouchableOpacity>
+          {/* nút nghe bài hát từ danh sách tìm kiếm */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              if (playlistList.includes(searchContent.trim()))
+                alert("Playlist đã tồn tại, vui lòng tạo playlist mới!");
+              else {
+                setPlaylistList([...playlistList, searchContent.trim()]);
+                savePlaylist();
+              }
+            }}
+          >
+            <Entypo name="add-to-list" size={25} color={"#fff"} />
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Danh sách bài hát */}
       <FlatList
         data={searchResult}
-        renderItem={({ item }) => <SongItem info={item} songdata={songData} />}
+        renderItem={({ item }) => (
+          <SongItem info={item} songdata={searchResult} />
+        )}
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
@@ -84,5 +171,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: "white",
     paddingHorizontal: 10,
+  },
+  button: {
+    height: 40,
+    width: 40,
+    backgroundColor: "#333",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20,
   },
 });
