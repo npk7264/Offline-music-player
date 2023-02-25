@@ -125,7 +125,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
   };
   // sự kiện di chuyển seekbar
   const scrollSlider = async (value) => {
-    console.log("scroll");
+    // console.log("scroll");
     const status = await sound.setPositionAsync(
       Math.floor(value * durationTime)
     );
@@ -178,26 +178,37 @@ const MusicController = ({ idMusicClick, songdata }) => {
       const value = await AsyncStorage.getItem(RECENT);
       if (value !== null) {
         await setListRecent(JSON.parse(value));
-        console.log("READ DATA from ASYNC STORAGE: " + value);
-
         // LƯU DỮ LIỆU mới
         let jsonValue = JSON.parse(value);
+        // thời gian các lần nghe
+        let timeList = jsonValue
+          .filter((item) => {
+            return item.id == songdata[index].id;
+          })
+          .map((item) => item.time)[0];
+        if (timeList == undefined) timeList = [];
+        // console.log(jsonValue);
         // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
-        if (jsonValue.includes(songdata[index].id)) {
+        if (jsonValue.map((item) => item.id).includes(songdata[index].id)) {
           jsonValue = jsonValue.filter((item) => {
-            return item != songdata[index].id;
+            return item.id != songdata[index].id;
           });
         }
-        // lưu
+        // console.log(timeList);
+        //lưu
         await AsyncStorage.setItem(
           RECENT,
-          JSON.stringify([songdata[index].id, ...jsonValue])
+          JSON.stringify([
+            { id: songdata[index].id, time: [...timeList, new Date()] },
+            ...jsonValue,
+          ])
         );
       } else
         await AsyncStorage.setItem(
           RECENT,
-          JSON.stringify([songdata[index].id])
+          JSON.stringify([{ id: songdata[index].id, time: [new Date()] }])
         );
+      // await AsyncStorage.removeItem(RECENT)
     } catch (e) {
       alert("Failed to fetch the RECENT from storage");
     }

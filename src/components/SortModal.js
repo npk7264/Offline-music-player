@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 // Component sap xep
@@ -89,7 +89,7 @@ const SortModal = ({ showSort, Sort, sortOption, Option }) => {
   );
 };
 
-export default SortModal;
+export default memo(SortModal);
 
 const styles = StyleSheet.create({
   modal: {

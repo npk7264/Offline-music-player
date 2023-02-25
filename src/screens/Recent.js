@@ -12,6 +12,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
+import Title from "../components/Title";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,7 +26,7 @@ const Recent = () => {
     try {
       const value = await AsyncStorage.getItem(RECENT);
       if (value !== null) {
-        setListRecent(JSON.parse(value));
+        setListRecent(JSON.parse(value).map((item) => item.id));
       }
     } catch (e) {
       alert("Failed to fetch the RECENT from storage");
@@ -67,17 +68,7 @@ const Recent = () => {
       <SearchBar />
 
       {/* Title */}
-      <View
-        style={{
-          width: "100%",
-          height: 60,
-          backgroundColor: "#ccc",
-          justifyContent: "center",
-          paddingHorizontal: 20,
-        }}
-      >
-        <Text style={{ fontSize: 30, fontWeight: "500" }}>Bài hát gần đây</Text>
-      </View>
+      <Title title={"Nghe gần đây"} />
 
       {/* Danh sách bài hát */}
       {recentData.length === 0 ? (

@@ -9,6 +9,7 @@ import Song from "../screens/Song";
 import Playlist from "../screens/Playlist";
 import Favorite from "../screens/Favorite";
 import Recent from "../screens/Recent";
+import Chart from "../screens/Chart";
 
 const Tab = createBottomTabNavigator();
 
@@ -74,6 +75,22 @@ export default BottomMenu = () => {
           tabBarIcon: ({ focused }) => (
             <MaterialIcons
               name="history"
+              size={24}
+              color={focused ? "#4D8D6E" : "#ccc"}
+            />
+          ),
+          tabBarInactiveTintColor: "#ccc",
+          tabBarActiveTintColor: "#4D8D6E",
+        }}
+      />
+      <Tab.Screen
+        name="My top"
+        component={Chart}
+        options={{
+          tabBarLabelStyle: styles.menuTitle,
+          tabBarIcon: ({ focused }) => (
+            <Entypo
+              name="bar-graph"
               size={24}
               color={focused ? "#4D8D6E" : "#ccc"}
             />

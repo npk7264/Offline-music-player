@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import SongItem from "../components/SongItem";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
+import Title from "../components/Title";
 
 import { songData } from "../../data/songData";
 
@@ -52,19 +53,7 @@ const Search = () => {
       </View>
 
       {/* Title */}
-      <View
-        style={{
-          width: "100%",
-          height: 60,
-          backgroundColor: "#ccc",
-          justifyContent: "center",
-          paddingHorizontal: 20,
-        }}
-      >
-        <Text style={{ fontSize: 30, fontWeight: "500" }}>
-          Kết quả tìm kiếm
-        </Text>
-      </View>
+      <Title title={"Kết quả tìm kiếm"} />
 
       {/* Danh sách bài hát */}
       <FlatList

@@ -1,10 +1,18 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  StatusBar,
+  Image,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
 
 import BackBar from "../components/BackBar";
 import MusicController from "../components/MusicController";
+import Title from "../components/Title";
 
 // route: dữ liệu được navigate tới
 const Player = ({ route }) => {
@@ -16,9 +24,7 @@ const Player = ({ route }) => {
       <BackBar />
 
       {/* Tiêu đề trang */}
-      <View style={styles.title}>
-        <Text style={{ fontSize: 30, fontWeight: "500" }}>Nghe nhạc</Text>
-      </View>
+      <Title title={"Nghe nhạc"} />
 
       {/* Hình ảnh */}
       <View
@@ -32,7 +38,7 @@ const Player = ({ route }) => {
         <View style={styles.imagePlayer}>
           <Image
             style={{ width: "100%", height: "100%" }}
-            source={require('../../assets/disc_img.png')}
+            source={require("../../assets/disc_img.png")}
           />
         </View>
       </View>
