@@ -14,7 +14,7 @@ import React, { useState, useEffect, useContext } from "react";
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
 import Title from "../components/Title";
-import { songData, getAllAudioFilesFromDevice } from "../../data/songData";
+import { songData } from "../../data/songData";
 
 import SortModal from "../components/SortModal";
 import PlayerMini from "../components/PlayerMini";
@@ -157,7 +157,7 @@ const Song = () => {
         Option={Option}
       />
 
-      {/* <PlayerMini></PlayerMini> */}
+      <PlayerMini></PlayerMini>
     </SafeAreaView>
   );
 };
