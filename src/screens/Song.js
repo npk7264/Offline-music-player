@@ -22,7 +22,6 @@ import Player from "./Player";
 import { DataContext } from "../context/DataContext";
 
 import * as MediaLibrary from "expo-media-library";
-import { async } from "q";
 
 // chuyen ve tieng Viet khong dau
 function ConverVItoEN(str) {
@@ -90,7 +89,9 @@ const Song = () => {
         throw new Error("No audio files found");
       }
 
-      const mp3Files = media.assets.filter((asset) => asset.filename.endsWith(".mp3"));
+      const mp3Files = media.assets.filter((asset) =>
+        asset.filename.endsWith(".mp3")
+      );
       const uris = mp3Files.map((asset, index) => ({
         id: songData.length + index,
         name: asset.filename.substring(0, asset.filename.length - 4),
@@ -104,8 +105,6 @@ const Song = () => {
       console.error(error);
     }
   };
-
-
 
   useEffect(() => {
     getAllAudioFilesFromDevice();
@@ -133,8 +132,8 @@ const Song = () => {
           sortOption === "NgayThem"
             ? localData
             : sortOption === "NgheSi"
-              ? resultNgheSi
-              : resultBaiHat
+            ? resultNgheSi
+            : resultBaiHat
         }
         renderItem={({ item }) => (
           <SongItem
@@ -143,8 +142,8 @@ const Song = () => {
               sortOption === "NgayThem"
                 ? localData
                 : sortOption === "NgheSi"
-                  ? resultNgheSi
-                  : resultBaiHat
+                ? resultNgheSi
+                : resultBaiHat
             }
           />
         )}
@@ -158,7 +157,7 @@ const Song = () => {
         Option={Option}
       />
 
-      <PlayerMini></PlayerMini>
+      {/* <PlayerMini></PlayerMini> */}
     </SafeAreaView>
   );
 };
