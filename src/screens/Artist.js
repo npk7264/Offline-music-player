@@ -1,6 +1,5 @@
 import {
   FlatList,
-  Modal,
   SafeAreaView,
   StatusBar,
   StyleSheet,
