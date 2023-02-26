@@ -8,19 +8,21 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BackBar from "../components/BackBar";
 import { songData } from "../../data/songData";
+import { DataContext } from "../context/DataContext";
 // import SongItem from "../components/SongItem";
 import SongModal from "../components/SongModal";
 import Title from "../components/Title";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 const DetailPlaylist = ({ route }) => {
+  const context = useContext(DataContext);
   const navigation = useNavigation();
 
   // component songitem
@@ -100,9 +102,9 @@ const DetailPlaylist = ({ route }) => {
   const playlistData = songInPlaylist.map((item) => {
     return {
       id: item,
-      name: songData[item].name,
-      singer: songData[item].singer,
-      uri: songData[item].uri,
+      name: context.data[item].name,
+      singer: context.data[item].singer,
+      uri: context.data[item].uri,
     };
   });
 

@@ -57,9 +57,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
   };
 
   // sự kiện phát nhạc lần đầu hoặc replay khi đang phát
-  const playSoundFirstTime = async () => {
+  const playSoundFirstTime = async (uri) => {
     const { sound, status } = await Audio.Sound.createAsync(
-      songdata[index].uri,
+      songdata[index].id < songData.length ? songdata[index].uri : { uri },
       {},
       (status) => {
         const curr = convertTime(status?.positionMillis);
@@ -68,7 +68,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
         if (status?.positionMillis / 1000 == status?.durationMillis / 1000) {
-          if (songdata.length == 1) playSoundFirstTime();
+          if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
           else nextSong();
         }
       }
@@ -91,9 +91,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
     setStatus(status);
   };
   // sự kiện replay nhạc (khi tạm dừng)
-  const replaySoundPause = async () => {
+  const replaySoundPause = async (uri) => {
     const { sound, status } = await Audio.Sound.createAsync(
-      songdata[index].uri,
+      songdata[index].id < songData.length ? songdata[index].uri : { uri },
       {},
       (status) => {
         const curr = convertTime(status?.positionMillis);
@@ -102,7 +102,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
         setPosTime(status?.positionMillis);
         // kiểm tra nếu hết thời gian bài nhạc thì chuyển sang bài tiếp theo
         if (status?.positionMillis / 1000 == status?.durationMillis / 1000) {
-          if (songdata.length == 1) playSoundFirstTime();
+          if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
           else nextSong();
         }
       }
@@ -233,8 +233,8 @@ const MusicController = ({ idMusicClick, songdata }) => {
   // xử lí khi index bài hát thay đổi (thao tác next, previous, trạng thái like)
   useEffect(() => {
     console.log("MOVE to NEXT or PREVIOUS");
-    if (isPlaying) playSoundFirstTime();
-    else replaySoundPause();
+    if (isPlaying) playSoundFirstTime(songdata[index].uri);
+    else replaySoundPause(songdata[index].uri);
     readFavorite();
     saveRecent();
 
@@ -250,7 +250,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
     <View>
       {/* Thông tin nhạc */}
       <View style={styles.songInfo}>
-        <Text style={{ fontSize: 25 }}>{songdata[index].name}</Text>
+        <Text style={{ fontSize: 25 }} numberOfLines={1}>
+          {songdata[index].name}
+        </Text>
         <Text style={{ fontSize: 20, color: "gray" }}>
           {songdata[index].singer}
         </Text>
@@ -340,7 +342,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
             const soundState = !isPlaying;
             // Kiểm tra trạng thái isPlaying để phát nhạc hoặc tạm dừng
             if (soundState) {
-              if (sound == undefined) playSoundFirstTime();
+              if (sound == undefined) playSoundFirstTime(songdata[index].uri);
               else playSound();
             } else pauseSound();
           }}

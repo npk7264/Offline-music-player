@@ -8,7 +8,7 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
@@ -18,10 +18,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DataContext } from "../context/DataContext";
 
 const RECENT = "RECENT";
 
 const Chart = () => {
+  const context = useContext(DataContext);
   const [listRecent, setListRecent] = useState([]);
   const [timeFilter, setTime] = useState("day");
 
@@ -84,9 +86,9 @@ const Chart = () => {
     .map((item) => {
       return {
         id: item.id,
-        name: songData[item.id].name,
-        singer: songData[item.id].singer,
-        uri: songData[item.id].uri,
+        name: context.data[item.id].name,
+        singer: context.data[item.id].singer,
+        uri: context.data[item.id].uri,
       };
     });
 
