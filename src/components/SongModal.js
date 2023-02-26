@@ -7,19 +7,21 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import SongItem from "./SongItem";
 import { songData } from "../../data/songData";
+import { DataContext } from "../context/DataContext";
 
 const SongModal = ({ showSongModal, onData, playlistName }) => {
   const turnOff = () => {
     onData();
   };
 
+  const context = useContext(DataContext);
   const [songInPlaylist, setSongInPlaylist] = useState([]); // danh sách bài hát trong playlist
 
   // đọc danh sách bài hát từ Async Storage
@@ -53,7 +55,7 @@ const SongModal = ({ showSongModal, onData, playlistName }) => {
         </View>
         {/* Danh sách bài hát */}
         <FlatList
-          data={songData}
+          data={context.data}
           renderItem={({ item }) => (
             <SongItem
               info={item}
