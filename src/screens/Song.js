@@ -22,6 +22,7 @@ import Player from "./Player";
 import { DataContext } from "../context/DataContext";
 
 import * as MediaLibrary from "expo-media-library";
+import { async } from "q";
 
 // chuyen ve tieng Viet khong dau
 function ConverVItoEN(str) {
@@ -73,25 +74,25 @@ const Song = () => {
 
   const [localData, setLocalData] = useState([]);
 
-  async function getAllAudioFilesFromDevice() {
+  const getAllAudioFilesFromDevice = async () => {
     try {
-      // Yêu cầu quyền truy cập thư viện phương tiện
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
         throw new Error("Permission not granted for media library");
       }
 
-      // Lấy danh sách tất cả các tệp âm thanh
       const media = await MediaLibrary.getAssetsAsync({
-        mediaType: "audio",
-        // giới hạn số lượng file đọc từ máy
-        first: 20,
+        mediaType: MediaLibrary.MediaType.audio,
       });
 
-      // Lấy URI của các tệp âm thanh
-      const uris = media.assets.map((asset, index) => ({
+      // Check if media.assets is an array
+      if (!Array.isArray(media.assets)) {
+        throw new Error("No audio files found");
+      }
+
+      const mp3Files = media.assets.filter((asset) => asset.filename.endsWith(".mp3"));
+      const uris = mp3Files.map((asset, index) => ({
         id: songData.length + index,
-        // remove file extension
         name: asset.filename.substring(0, asset.filename.length - 4),
         singer: "Unknown",
         uri: asset.uri,
@@ -102,7 +103,9 @@ const Song = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
+
+
 
   useEffect(() => {
     getAllAudioFilesFromDevice();
@@ -130,8 +133,8 @@ const Song = () => {
           sortOption === "NgayThem"
             ? localData
             : sortOption === "NgheSi"
-            ? resultNgheSi
-            : resultBaiHat
+              ? resultNgheSi
+              : resultBaiHat
         }
         renderItem={({ item }) => (
           <SongItem
@@ -140,8 +143,8 @@ const Song = () => {
               sortOption === "NgayThem"
                 ? localData
                 : sortOption === "NgheSi"
-                ? resultNgheSi
-                : resultBaiHat
+                  ? resultNgheSi
+                  : resultBaiHat
             }
           />
         )}
@@ -154,6 +157,8 @@ const Song = () => {
         sortOption={sortOption}
         Option={Option}
       />
+
+      <PlayerMini></PlayerMini>
     </SafeAreaView>
   );
 };

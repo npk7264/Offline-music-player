@@ -14,8 +14,8 @@ const PlayerMini = () => {
             ></Slider>
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 2, marginLeft: 15 }}>
-                    <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>Nang am xa dan</Text>
-                    <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>Son Tung MTP</Text>
+                    <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>Ánh nắng của anh</Text>
+                    <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>Đức PhúcSSS</Text>
                 </View>
 
                 <View style={styles.controllerContainer}>
