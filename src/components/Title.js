@@ -12,7 +12,9 @@ const Title = ({ title }) => {
         paddingHorizontal: 20,
       }}
     >
-      <Text style={{ fontSize: 30, fontWeight: "500" }}>{title}</Text>
+      <Text style={{ fontSize: 30, fontWeight: "500" }} numberOfLines={1}>
+        {title}
+      </Text>
     </View>
   );
 };

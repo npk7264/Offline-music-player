@@ -9,6 +9,7 @@ import BottomMenu from "./src/components/BottomMenu";
 import Player from "./src/screens/Player";
 import Search from "./src/screens/Search";
 import DetailPlaylist from "./src/screens/DetailPlaylist";
+import DetailArtist from "./src/components/DetailArtist";
 import AudioProvider from "./src/context/AudioProvider";
 import { DataProvider } from "./src/context/DataContext";
 
@@ -26,6 +27,7 @@ export default function App() {
           <Stack.Screen name="Player" component={Player} />
           <Stack.Screen name="Search" component={Search} />
           <Stack.Screen name="DetailPlaylist" component={DetailPlaylist} />
+          <Stack.Screen name="DetailArtist" component={DetailArtist} />
         </Stack.Navigator>
       </NavigationContainer>
     </DataProvider>
