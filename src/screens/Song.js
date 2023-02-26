@@ -84,13 +84,15 @@ const Song = () => {
       // Lấy danh sách tất cả các tệp âm thanh
       const media = await MediaLibrary.getAssetsAsync({
         mediaType: "audio",
-        first: 100,
+        // giới hạn số lượng file đọc từ máy
+        first: 20,
       });
 
       // Lấy URI của các tệp âm thanh
       const uris = media.assets.map((asset, index) => ({
         id: songData.length + index,
-        name: asset.filename,
+        // remove file extension
+        name: asset.filename.substring(0, asset.filename.length - 4),
         singer: "Unknown",
         uri: asset.uri,
       }));
