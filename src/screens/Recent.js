@@ -6,8 +6,9 @@ import {
   Text,
   View,
   Alert,
+  Button,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
@@ -17,9 +18,12 @@ import Title from "../components/Title";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { DataContext } from "../context/DataContext";
+
 const RECENT = "RECENT";
 
 const Recent = () => {
+  const context = useContext(DataContext);
   const [listRecent, setListRecent] = useState([]);
 
   const readRecent = async () => {
@@ -29,6 +33,7 @@ const Recent = () => {
         setListRecent(JSON.parse(value).map((item) => item.id));
       }
     } catch (e) {
+      await AsyncStorage.setItem(RECENT, JSON.stringify([]));
       alert("Failed to fetch the RECENT from storage");
     }
   };
@@ -55,9 +60,9 @@ const Recent = () => {
   const recentData = listRecent.map((item) => {
     return {
       id: item,
-      name: songData[item].name,
-      singer: songData[item].singer,
-      uri: songData[item].uri,
+      name: context.data[item].name,
+      singer: context.data[item].singer,
+      uri: context.data[item].uri,
     };
   });
 

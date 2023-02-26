@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Entypo } from "@expo/vector-icons";
 
 import SongItem from "../components/SongItem";
@@ -17,10 +17,12 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DataContext } from "../context/DataContext";
 
 const PLAYLIST = "PLAYLIST";
 
 const Search = () => {
+  const context = useContext(DataContext);
   const navigation = useNavigation();
 
   const [searchContent, setSearchContent] = useState("");
@@ -32,7 +34,7 @@ const Search = () => {
     let searchText = text.trim().toUpperCase();
     // hiển thị kết quả tìm kiếm nếu thông tin tìm kiếm khác rỗng
     if (searchText !== "") {
-      const searchData = songData.filter((item) => {
+      const searchData = context.data.filter((item) => {
         return (
           item.name.toUpperCase().includes(searchText) ||
           item.singer.toUpperCase().includes(searchText)
