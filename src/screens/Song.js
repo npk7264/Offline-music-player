@@ -82,7 +82,10 @@ const Song = () => {
       }
 
       // Lấy danh sách tất cả các tệp âm thanh
-      const media = await MediaLibrary.getAssetsAsync({ mediaType: "audio" });
+      const media = await MediaLibrary.getAssetsAsync({
+        mediaType: "audio",
+        first: 100,
+      });
 
       // Lấy URI của các tệp âm thanh
       const uris = media.assets.map((asset, index) => ({
