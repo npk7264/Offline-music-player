@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
@@ -17,11 +17,12 @@ import Title from "../components/Title";
 
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button } from "react-native-web";
+import { DataContext } from "../context/DataContext";
 
 const FAVORITE = "FAVORITE";
 
 const Favorite = () => {
+  const context = useContext(DataContext);
   const [favoriteList, setFavoriteList] = useState([]);
   const navigation = useNavigation();
 
@@ -111,9 +112,9 @@ const Favorite = () => {
   const favoriteData = favoriteList.map((item) => {
     return {
       id: item,
-      name: songData[item].name,
-      singer: songData[item].singer,
-      uri: songData[item].uri,
+      name: context.data[item].name,
+      singer: context.data[item].singer,
+      uri: context.data[item].uri,
     };
   });
 

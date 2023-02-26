@@ -7,17 +7,21 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Button,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
 import Title from "../components/Title";
-import { songData } from "../../data/songData";
+import { songData, getAllAudioFilesFromDevice } from "../../data/songData";
 
 import SortModal from "../components/SortModal";
 import PlayerMini from "../components/PlayerMini";
 import Player from "./Player";
+import { DataContext } from "../context/DataContext";
+
+import * as MediaLibrary from "expo-media-library";
 
 // chuyen ve tieng Viet khong dau
 function ConverVItoEN(str) {
@@ -52,14 +56,9 @@ function ConverVItoEN(str) {
   return str;
 }
 
-const resultBaiHat = [...songData].sort((a, b) =>
-  ConverVItoEN(a.name).localeCompare(ConverVItoEN(b.name))
-);
-const resultNgheSi = [...songData].sort((a, b) =>
-  ConverVItoEN(a.singer).localeCompare(ConverVItoEN(b.singer))
-);
-
 const Song = () => {
+  const context = useContext(DataContext);
+
   const [showSort, setShowSort] = useState(false);
   // Function truyen tu component con ve
   const Sort = (flag) => {
@@ -71,6 +70,45 @@ const Song = () => {
   const Option = (value) => {
     setSortOption(value);
   };
+
+  const [localData, setLocalData] = useState([]);
+
+  async function getAllAudioFilesFromDevice() {
+    try {
+      // Yêu cầu quyền truy cập thư viện phương tiện
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        throw new Error("Permission not granted for media library");
+      }
+
+      // Lấy danh sách tất cả các tệp âm thanh
+      const media = await MediaLibrary.getAssetsAsync({ mediaType: "audio" });
+
+      // Lấy URI của các tệp âm thanh
+      const uris = media.assets.map((asset, index) => ({
+        id: songData.length + index,
+        name: asset.filename,
+        singer: "Unknown",
+        uri: asset.uri,
+      }));
+
+      context.updateNewData(songData.concat(uris));
+      setLocalData(songData.concat(uris));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getAllAudioFilesFromDevice();
+  }, []);
+
+  const resultBaiHat = [...context.data].sort((a, b) =>
+    ConverVItoEN(a.name).localeCompare(ConverVItoEN(b.name))
+  );
+  const resultNgheSi = [...context.data].sort((a, b) =>
+    ConverVItoEN(a.singer).localeCompare(ConverVItoEN(b.singer))
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -85,7 +123,7 @@ const Song = () => {
       <FlatList
         data={
           sortOption === "NgayThem"
-            ? songData
+            ? localData
             : sortOption === "NgheSi"
             ? resultNgheSi
             : resultBaiHat
@@ -95,14 +133,14 @@ const Song = () => {
             info={item}
             songdata={
               sortOption === "NgayThem"
-                ? songData
+                ? localData
                 : sortOption === "NgheSi"
                 ? resultNgheSi
                 : resultBaiHat
             }
           />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
       />
 
       <SortModal
