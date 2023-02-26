@@ -87,8 +87,8 @@ const Song = () => {
           sortOption === "NgayThem"
             ? songData
             : sortOption === "NgheSi"
-            ? resultNgheSi
-            : resultBaiHat
+              ? resultNgheSi
+              : resultBaiHat
         }
         renderItem={({ item }) => (
           <SongItem
@@ -97,8 +97,8 @@ const Song = () => {
               sortOption === "NgayThem"
                 ? songData
                 : sortOption === "NgheSi"
-                ? resultNgheSi
-                : resultBaiHat
+                  ? resultNgheSi
+                  : resultBaiHat
             }
           />
         )}
@@ -111,6 +111,8 @@ const Song = () => {
         sortOption={sortOption}
         Option={Option}
       />
+
+      <PlayerMini></PlayerMini>
     </SafeAreaView>
   );
 };

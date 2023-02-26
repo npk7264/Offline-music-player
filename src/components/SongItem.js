@@ -68,6 +68,7 @@ const SongItem = ({ info, screen, playlist, songdata }) => {
         </Text>
         <Text style={{ fontSize: 16, color: "gray" }}>{info.singer}</Text>
       </View>
+
     </TouchableOpacity>
   );
 };
