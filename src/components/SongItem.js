@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Audio } from "expo-av";
 
-const SongItem = ({ info, screen, playlist, songdata }) => {
+const SongItem = ({ info, screen, playlist, songdata, onAudioPress }) => {
   const navigation = useNavigation();
 
   const [songInPlaylist, setSongInPlaylist] = useState([]);
@@ -57,7 +57,9 @@ const SongItem = ({ info, screen, playlist, songdata }) => {
         // thêm nhạc vào danh sách phát
         if (screen == "AddSongToPlaylist") saveSongToPlaylist();
         // phát nhạc
-        else navigation.navigate("Player", { info, songdata });
+        else
+          onAudioPress();
+        //navigation.navigate("Player", { info, songdata });
       }}
     >
       <View

@@ -20,9 +20,11 @@ import SortModal from "../components/SortModal";
 import PlayerMini from "../components/PlayerMini";
 import Player from "./Player";
 import { DataContext } from "../context/DataContext";
-
+import { AudioContext } from "../context/AudioProvider";
 import * as MediaLibrary from "expo-media-library";
 import { async } from "q";
+import { play, pause, resume, playNext } from "../misc/audioController";
+import { Audio } from "expo-av";
 
 // chuyen ve tieng Viet khong dau
 function ConverVItoEN(str) {
@@ -59,7 +61,7 @@ function ConverVItoEN(str) {
 
 const Song = () => {
   const context = useContext(DataContext);
-
+  const contextType = useContext(AudioContext);
   const [showSort, setShowSort] = useState(false);
   // Function truyen tu component con ve
   const Sort = (flag) => {
@@ -105,7 +107,59 @@ const Song = () => {
     }
   };
 
+  handleAudioPress = async audio => {
+    // const {
+    //   playbackObj,
+    //   soundObj,
+    //   currentAudio,
+    //   updateState,
+    // } = contextType;
+    // playing audio for the first time
+    console.log('hi');
+    console.log(audio);
+    console.log(contextType.soundObj);
+    console.log('end');
+    if (contextType.soundObj === null) {
+      const playbackObj = new Audio.Sound();
+      const status = await play(playbackObj, audio.uri)
+      return contextType.updateState(contextType, {
+        currentAudio: audio,
+        playbackObj: playbackObj,
+        soundObj: status,
+      });
+    }
+    else
+      console.log('co null dau');
 
+    //pause audio
+    if (contextType.soundObj.isLoaded
+      && contextType.soundObj.isPlaying
+      && contextType.currentAudio.id === audio.id) {
+      const status = await pause(contextType.playbackObj)
+      return contextType.updateState(contextType, {
+        soundObj: status,
+      });
+    }
+
+    //resume audio
+    if (contextType.soundObj.isLoaded
+      && !contextType.soundObj.isPlaying
+      && contextType.currentAudio.id === audio.id) {
+      const status = await resume(contextType.playbackObj);
+      return contextType.updateState(contextType, {
+        soundObj: status,
+      });
+    }
+
+    // select another audio
+    if (contextType.soundObj.isLoaded && contextType.currentAudio.id !== audio.id) {
+      const status = await playNext(contextType.playbackObj, audio.uri);
+      return contextType.updateState(contextType, {
+        currentAudio: audio,
+        soundObj: status,
+      });
+    }
+  }
 
   useEffect(() => {
     getAllAudioFilesFromDevice();
@@ -146,6 +200,7 @@ const Song = () => {
                   ? resultNgheSi
                   : resultBaiHat
             }
+            onAudioPress={() => this.handleAudioPress(item)}
           />
         )}
         keyExtractor={(item, index) => index}
@@ -158,7 +213,7 @@ const Song = () => {
         Option={Option}
       />
 
-      <PlayerMini></PlayerMini>
+      {contextType.soundObj !== null && <PlayerMini audio={contextType.currentAudio}></PlayerMini>}
     </SafeAreaView>
   );
 };

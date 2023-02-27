@@ -17,17 +17,20 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <DataProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="BottomMenu"
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name="BottomMenu" component={BottomMenu} />
-          <Stack.Screen name="Player" component={Player} />
-          <Stack.Screen name="Search" component={Search} />
-          <Stack.Screen name="DetailPlaylist" component={DetailPlaylist} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <AudioProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="BottomMenu"
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen name="BottomMenu" component={BottomMenu} />
+            <Stack.Screen name="Player" component={Player} />
+            <Stack.Screen name="Search" component={Search} />
+            <Stack.Screen name="DetailPlaylist" component={DetailPlaylist} />
+          </Stack.Navigator>
+        </NavigationContainer>
+
+      </AudioProvider>
     </DataProvider>
   );
 }
