@@ -2,7 +2,7 @@ import Slider from "@react-native-community/slider";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-const PlayerMini = () => {
+const PlayerMini = ({ audio }) => {
     const [playing, setPlaying] = useState(false);
     return (
         <TouchableOpacity style={styles.view}
@@ -14,8 +14,8 @@ const PlayerMini = () => {
             ></Slider>
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 2, marginLeft: 15 }}>
-                    <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>Ánh nắng của anh</Text>
-                    <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>Đức PhúcSSS</Text>
+                    <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>{audio.name}</Text>
+                    <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>Đức Phúc</Text>
                 </View>
 
                 <View style={styles.controllerContainer}>
