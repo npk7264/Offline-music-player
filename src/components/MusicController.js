@@ -70,6 +70,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
     if (soundObj === null) {
       const audio = currentAudio;
       const status = await play(playbackObj, audio.uri);
+      context.playbackObj.setOnPlaybackStatusUpdate(context.onPlaybackStatusUpdate);
       return context.updateState(context, {
         soundObj: status,
         currentAudio: audio,

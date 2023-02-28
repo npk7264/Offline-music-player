@@ -13,7 +13,6 @@ import MusicController from "../components/MusicController";
 import Title from "../components/Title";
 
 
-// route: dữ liệu được navigate tới
 const Player = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
