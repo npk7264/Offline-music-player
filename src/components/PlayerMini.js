@@ -21,6 +21,7 @@ const PlayerMini = () => {
             ></Slider>
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 2, marginLeft: 15 }}>
+                    {console.log(context.currentAudio)}
                     <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>{context.currentAudio.name}</Text>
                     <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>{context.currentAudio.singer}</Text>
                 </View>

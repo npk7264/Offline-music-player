@@ -112,6 +112,43 @@ const Song = () => {
     }
   };
 
+  onPlaybackStatusUpdate = async (playbackStatus) => {
+    if (playbackStatus.isLoaded && playbackStatus.isPlaying) {
+      contextType.updateState(contextType, {
+        playbackPosition: playbackStatus.positionMillis,
+        playbackDuration: playbackStatus.durationMillis,
+      })
+    }
+
+    //xu li khi bai hat ket thuc
+    if (playbackStatus.didJustFinish) {
+      const nextAudioIndex = contextType.currentAudioIndex + 1;
+
+      //xu ly khi bai hien tai la bai cuoi cung 
+      if (nextAudioIndex >= contextType.audioFiles.length()) {
+        contextType.playbackObj.unloadAsync();
+        return contextType.updateState(contextType, {
+          soundObj: null,
+          currentAudio: contextType.audioFiles[0],
+          isPlaying: false,
+          currentAudioIndex: 0,
+          playbackPosition: null,
+          playbackDuration: null,
+        });
+      }
+
+      //tu dong chuyen bai khi bai hat ket thuc
+      const audio = contextType.audioFiles[nextAudioIndex];
+      const status = await playNext(contextType.playbackObj, audio.uri);
+      contextType.updateState(contextType, {
+        soundObj: status,
+        currentAudio: audio,
+        isPlaying: true,
+        currentAudioIndex: nextAudioIndex,
+      });
+    }
+  }
+
   handleAudioPress = async audio => {
     // const {
     //   playbackObj,
@@ -119,19 +156,25 @@ const Song = () => {
     //   currentAudio,
     //   updateState,
     // } = contextType;
+
     // playing audio for the first time
     console.log('hi');
     console.log(audio);
     console.log(contextType.soundObj);
     console.log('end');
     if (contextType.soundObj === null) {
+      console.log('play');
       const playbackObj = new Audio.Sound();
-      const status = await play(playbackObj, audio.uri)
-      return contextType.updateState(contextType, {
+      const status = await play(playbackObj, audio.uri);
+      const index = contextType.audioFiles.indexOf(audio);
+      contextType.updateState(contextType, {
         currentAudio: audio,
         playbackObj: playbackObj,
         soundObj: status,
+        currentAudioIndex: index,
+        isPlaying: true,
       });
+      return playbackObj.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate)
     }
     else
       console.log('co null dau');
@@ -140,9 +183,11 @@ const Song = () => {
     if (contextType.soundObj.isLoaded
       && contextType.soundObj.isPlaying
       && contextType.currentAudio.id === audio.id) {
+      console.log('pause');
       const status = await pause(contextType.playbackObj)
       return contextType.updateState(contextType, {
         soundObj: status,
+        isPlaying: false,
       });
     }
 
@@ -150,18 +195,29 @@ const Song = () => {
     if (contextType.soundObj.isLoaded
       && !contextType.soundObj.isPlaying
       && contextType.currentAudio.id === audio.id) {
+      console.log('resume');
       const status = await resume(contextType.playbackObj);
       return contextType.updateState(contextType, {
         soundObj: status,
+        isPlaying: true,
       });
     }
 
     // select another audio
     if (contextType.soundObj.isLoaded && contextType.currentAudio.id !== audio.id) {
+      console.log('another');
       const status = await playNext(contextType.playbackObj, audio.uri);
+      const index = contextType.audioFiles.indexOf(audio);
       return contextType.updateState(contextType, {
-        currentAudio: audio,
+        currentAudio: {
+          id: audio.id,
+          name: audio.name,
+          singer: audio.singer,
+          uri: audio.uri
+        },
         soundObj: status,
+        isPlaying: true,
+        currentAudioIndex: index,
       });
     }
   }
