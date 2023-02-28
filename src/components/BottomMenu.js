@@ -6,6 +6,7 @@ import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import Song from "../screens/Song";
+import Artist from "../screens/Artist";
 import Playlist from "../screens/Playlist";
 import Favorite from "../screens/Favorite";
 import Recent from "../screens/Recent";
@@ -36,6 +37,22 @@ export default BottomMenu = () => {
         }}
       />
       <Tab.Screen
+        name="Artist"
+        component={Artist}
+        options={{
+          tabBarLabelStyle: styles.menuTitle,
+          tabBarIcon: ({ focused }) => (
+            <Entypo
+              name="user"
+              size={24}
+              color={focused ? "#4D8D6E" : "#ccc"}
+            />
+          ),
+          tabBarInactiveTintColor: "#ccc",
+          tabBarActiveTintColor: "#4D8D6E",
+        }}
+      />
+      <Tab.Screen
         name="Playlist"
         component={Playlist}
         options={{
@@ -52,7 +69,7 @@ export default BottomMenu = () => {
         }}
       />
       <Tab.Screen
-        name="Yêu thích"
+        name="Like"
         component={Favorite}
         options={{
           tabBarLabelStyle: styles.menuTitle,
