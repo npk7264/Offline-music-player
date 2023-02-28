@@ -22,7 +22,6 @@ import Player from "./Player";
 import { DataContext } from "../context/DataContext";
 import { AudioContext } from "../context/AudioProvider";
 import * as MediaLibrary from "expo-media-library";
-import { async } from "q";
 
 // chuyen ve tieng Viet khong dau
 function ConverVItoEN(str) {
