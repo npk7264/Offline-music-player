@@ -224,9 +224,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
   useEffect(() => {
     return sound
       ? () => {
-          console.log("SOUND has CHANGED");
-          sound.unloadAsync();
-        }
+        console.log("SOUND has CHANGED");
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
@@ -247,126 +247,127 @@ const MusicController = ({ idMusicClick, songdata }) => {
   };
 
   return (
-    <View>
-      {/* Thông tin nhạc */}
-      <View style={styles.songInfo}>
-        <Text style={{ fontSize: 25 }} numberOfLines={1}>
-          {songdata[index].name}
-        </Text>
-        <Text style={{ fontSize: 20, color: "gray" }}>
-          {songdata[index].singer}
-        </Text>
-      </View>
-      <View
-        style={{
-          height: 60,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Slider
-          style={styles.progressBar}
-          minimumValue={0}
-          maximumValue={1}
-          value={convertValueSlider()}
-          thumbTintColor="red"
-          minimumTrackTintColor="#000"
-          maximumTrackTintColor="#000"
-          onValueChange={(value) => {
-            setPosTime(Math.floor(value * durationTime));
-          }}
-          onSlidingComplete={async (value) => {
-            await scrollSlider(value);
-          }}
-        ></Slider>
-        <View style={styles.progressLevelDuration}>
-          <Text style={styles.progressLabelText}>{currentTime}</Text>
-          <Text style={styles.progressLabelText}>
-            {convertTime(status?.durationMillis)}
-          </Text>
-        </View>
-      </View>
+    <View><Text>HI</Text></View>
+    // <View>
+    //   {/* Thông tin nhạc */}
+    //   <View style={styles.songInfo}>
+    //     <Text style={{ fontSize: 25 }} numberOfLines={1}>
+    //       {songdata[index].name}
+    //     </Text>
+    //     <Text style={{ fontSize: 20, color: "gray" }}>
+    //       {songdata[index].singer}
+    //     </Text>
+    //   </View>
+    //   <View
+    //     style={{
+    //       height: 60,
+    //       justifyContent: "center",
+    //       alignItems: "center",
+    //     }}
+    //   >
+    //     <Slider
+    //       style={styles.progressBar}
+    //       minimumValue={0}
+    //       maximumValue={1}
+    //       value={convertValueSlider()}
+    //       thumbTintColor="red"
+    //       minimumTrackTintColor="#000"
+    //       maximumTrackTintColor="#000"
+    //       onValueChange={(value) => {
+    //         setPosTime(Math.floor(value * durationTime));
+    //       }}
+    //       onSlidingComplete={async (value) => {
+    //         await scrollSlider(value);
+    //       }}
+    //     ></Slider>
+    //     <View style={styles.progressLevelDuration}>
+    //       <Text style={styles.progressLabelText}>{currentTime}</Text>
+    //       <Text style={styles.progressLabelText}>
+    //         {convertTime(status?.durationMillis)}
+    //       </Text>
+    //     </View>
+    //   </View>
 
-      {/* thanh chứa các nút replay, yêu thích, thêm vào playlist */}
-      <View style={[styles.controllerContainer, { height: 60 }]}>
-        <TouchableOpacity
-          style={[styles.controllerItem, { height: 40, width: 40 }]}
-          onPress={() => {
-            // isPlaying ? playSoundFirstTime() : replaySoundPause();
-            const flag = !isRepeat;
-            setRepeat(flag);
-            repeatSong(flag);
-          }}
-        >
-          <MaterialCommunityIcons
-            name={isRepeat ? "repeat-once" : "repeat"}
-            size={30}
-            color="#333"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.controllerItem, { height: 40, width: 40 }]}
-          onPress={() => {
-            const likeState = !like;
-            setLike(!like);
-            likeState ? saveFavorite() : removeFavorite();
-          }}
-        >
-          <Icon name={like ? "heart" : "heart-o"} size={25} color="#333" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.controllerItem, { height: 40, width: 40 }]}
-          onPress={() => {
-            // Pause
-            setIsPlaying(false);
-            pauseSound();
-            // Mở playlist Modal
-            setShowPlaylistModal(true);
-          }}
-        >
-          <Entypo name="add-to-list" size={25} color={"#333"} />
-        </TouchableOpacity>
-      </View>
+    //   {/* thanh chứa các nút replay, yêu thích, thêm vào playlist */}
+    //   <View style={[styles.controllerContainer, { height: 60 }]}>
+    //     <TouchableOpacity
+    //       style={[styles.controllerItem, { height: 40, width: 40 }]}
+    //       onPress={() => {
+    //         // isPlaying ? playSoundFirstTime() : replaySoundPause();
+    //         const flag = !isRepeat;
+    //         setRepeat(flag);
+    //         repeatSong(flag);
+    //       }}
+    //     >
+    //       <MaterialCommunityIcons
+    //         name={isRepeat ? "repeat-once" : "repeat"}
+    //         size={30}
+    //         color="#333"
+    //       />
+    //     </TouchableOpacity>
+    //     <TouchableOpacity
+    //       style={[styles.controllerItem, { height: 40, width: 40 }]}
+    //       onPress={() => {
+    //         const likeState = !like;
+    //         setLike(!like);
+    //         likeState ? saveFavorite() : removeFavorite();
+    //       }}
+    //     >
+    //       <Icon name={like ? "heart" : "heart-o"} size={25} color="#333" />
+    //     </TouchableOpacity>
+    //     <TouchableOpacity
+    //       style={[styles.controllerItem, { height: 40, width: 40 }]}
+    //       onPress={() => {
+    //         // Pause
+    //         setIsPlaying(false);
+    //         pauseSound();
+    //         // Mở playlist Modal
+    //         setShowPlaylistModal(true);
+    //       }}
+    //     >
+    //       <Entypo name="add-to-list" size={25} color={"#333"} />
+    //     </TouchableOpacity>
+    //   </View>
 
-      {/* thanh điều khiển previous, play/pause, next */}
-      <View style={styles.controllerContainer}>
-        {/* xử lí sự kiện khi nhấn nút Previous */}
-        <TouchableOpacity style={styles.controllerItem} onPress={previousSong}>
-          <Icon name="step-backward" size={35} color="#333" />
-        </TouchableOpacity>
-        {/* xử lí sự kiện khi nhấn nút Play/Pause */}
-        <TouchableOpacity
-          style={styles.controllerItem}
-          onPress={() => {
-            setIsPlaying(!isPlaying);
-            const soundState = !isPlaying;
-            // Kiểm tra trạng thái isPlaying để phát nhạc hoặc tạm dừng
-            if (soundState) {
-              if (sound == undefined) playSoundFirstTime(songdata[index].uri);
-              else playSound();
-            } else pauseSound();
-          }}
-        >
-          <Icon
-            name={isPlaying === false ? "play" : "pause"}
-            size={35}
-            color="#333"
-          />
-        </TouchableOpacity>
-        {/* xử lí sự kiện khi nhấn nút Next */}
-        <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
-          <Icon name="step-forward" size={35} color="#333" />
-        </TouchableOpacity>
-      </View>
-      {/* <Text>
-        {index.toString()} + {isPlaying.toString()} + {isRepeat.toString()}
-      </Text> */}
-      <PlaylistModal
-        showPlaylistModal={showPlaylistModal}
-        onData={turnOffModal}
-        songID={songdata[index].id}
-      />
-    </View>
+    //   {/* thanh điều khiển previous, play/pause, next */}
+    //   <View style={styles.controllerContainer}>
+    //     {/* xử lí sự kiện khi nhấn nút Previous */}
+    //     <TouchableOpacity style={styles.controllerItem} onPress={previousSong}>
+    //       <Icon name="step-backward" size={35} color="#333" />
+    //     </TouchableOpacity>
+    //     {/* xử lí sự kiện khi nhấn nút Play/Pause */}
+    //     <TouchableOpacity
+    //       style={styles.controllerItem}
+    //       onPress={() => {
+    //         setIsPlaying(!isPlaying);
+    //         const soundState = !isPlaying;
+    //         // Kiểm tra trạng thái isPlaying để phát nhạc hoặc tạm dừng
+    //         if (soundState) {
+    //           if (sound == undefined) playSoundFirstTime(songdata[index].uri);
+    //           else playSound();
+    //         } else pauseSound();
+    //       }}
+    //     >
+    //       <Icon
+    //         name={isPlaying === false ? "play" : "pause"}
+    //         size={35}
+    //         color="#333"
+    //       />
+    //     </TouchableOpacity>
+    //     {/* xử lí sự kiện khi nhấn nút Next */}
+    //     <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
+    //       <Icon name="step-forward" size={35} color="#333" />
+    //     </TouchableOpacity>
+    //   </View>
+    //   {/* <Text>
+    //     {index.toString()} + {isPlaying.toString()} + {isRepeat.toString()}
+    //   </Text> */}
+    //   <PlaylistModal
+    //     showPlaylistModal={showPlaylistModal}
+    //     onData={turnOffModal}
+    //     songID={songdata[index].id}
+    //   />
+    // </View>
   );
 };
 

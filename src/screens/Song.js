@@ -22,6 +22,7 @@ import Player from "./Player";
 import { DataContext } from "../context/DataContext";
 import { AudioContext } from "../context/AudioProvider";
 import * as MediaLibrary from "expo-media-library";
+import { useNavigation } from "@react-navigation/native";
 
 import { play, pause, resume, playNext } from "../misc/audioController";
 import { Audio } from "expo-av";
@@ -60,6 +61,7 @@ function ConverVItoEN(str) {
 }
 
 const Song = () => {
+  const navigation = useNavigation();
   const context = useContext(DataContext);
   const contextType = useContext(AudioContext);
   const [showSort, setShowSort] = useState(false);

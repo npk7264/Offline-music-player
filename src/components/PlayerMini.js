@@ -10,7 +10,10 @@ const PlayerMini = () => {
     const [playing, setPlaying] = useState(false);
     return (
         <TouchableOpacity style={styles.view}
-        //onPress={navigation.navigate("Player", { info: context.currentAudio, songdata: context.audioFiles })}
+            onPress={() =>
+                navigation.navigate("Player")
+                //console.log("player")
+            }
         >
             <Slider
                 disabled={true}

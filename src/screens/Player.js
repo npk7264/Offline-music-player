@@ -6,18 +6,15 @@ import {
   StatusBar,
   Image,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import Slider from "@react-native-community/slider";
-import { Audio } from "expo-av";
+import React, { useContext } from "react";
 
 import BackBar from "../components/BackBar";
 import MusicController from "../components/MusicController";
 import Title from "../components/Title";
 
+
 // route: dữ liệu được navigate tới
-const Player = ({ route }) => {
-  const playlist = route.params.songdata;
-  const song = route.params.info;
+const Player = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar></StatusBar>
@@ -42,14 +39,7 @@ const Player = ({ route }) => {
           />
         </View>
       </View>
-      <MusicController
-        idMusicClick={playlist
-          .map((item) => {
-            return item.id;
-          })
-          .indexOf(song.id)}
-        songdata={playlist}
-      />
+      <MusicController />
     </SafeAreaView>
   );
 };
