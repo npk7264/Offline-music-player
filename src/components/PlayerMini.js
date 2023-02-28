@@ -1,12 +1,16 @@
 import Slider from "@react-native-community/slider";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
-const PlayerMini = ({ audio }) => {
+import { AudioContext } from "../context/AudioProvider";
+const PlayerMini = () => {
+    const context = useContext(AudioContext);
+    const navigation = useNavigation();
     const [playing, setPlaying] = useState(false);
     return (
         <TouchableOpacity style={styles.view}
-        // onPress={() => { Alert.alert("clicked") }}
+        //onPress={navigation.navigate("Player", { info: context.currentAudio, songdata: context.audioFiles })}
         >
             <Slider
                 disabled={true}
@@ -14,8 +18,8 @@ const PlayerMini = ({ audio }) => {
             ></Slider>
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 2, marginLeft: 15 }}>
-                    <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>{audio.name}</Text>
-                    <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>Đức Phúc</Text>
+                    <Text style={{ fontSize: 20, color: "black", fontWeight: '500' }}>{context.currentAudio.name}</Text>
+                    <Text style={{ fontSize: 14, color: "gray", marginTop: 10 }}>{context.currentAudio.singer}</Text>
                 </View>
 
                 <View style={styles.controllerContainer}>
