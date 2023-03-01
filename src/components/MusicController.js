@@ -179,11 +179,11 @@ const MusicController = ({ idMusicClick, songdata }) => {
     try {
       await AsyncStorage.setItem(
         FAVORITE,
-        JSON.stringify([...listLike, songdata[index].id])
+        JSON.stringify([...listLike, audioFiles[currentAudioIndex].id])
       );
       // alert("Data successfully saved");
     } catch (e) {
-      alert("Failed to save the data to the storage");
+      alert("Failed to save the data to the storage", e);
     }
   };
   const removeFavorite = async () => {
@@ -192,13 +192,13 @@ const MusicController = ({ idMusicClick, songdata }) => {
         FAVORITE,
         JSON.stringify(
           listLike.filter((item) => {
-            return item !== songdata[index].id;
+            return item !== audioFiles[currentAudioIndex].id;
           })
         )
       );
       // alert("Data successfully removed");
     } catch (e) {
-      alert("Failed to remove the data to the storage");
+      alert("Failed to remove the data to the storage", e);
     }
   };
   const readFavorite = async () => {
@@ -206,10 +206,10 @@ const MusicController = ({ idMusicClick, songdata }) => {
       const value = await AsyncStorage.getItem(FAVORITE);
       if (value !== null && value !== []) {
         setListLike(JSON.parse(value));
-        setLike(JSON.parse(value).includes(songdata[index].id));
+        setLike(JSON.parse(value).includes(audioFiles[currentAudioIndex].id));
       }
     } catch (e) {
-      alert("Failed to fetch the input from storage");
+      alert("Failed to fetch the input from storage", e);
     }
   };
 
@@ -224,15 +224,15 @@ const MusicController = ({ idMusicClick, songdata }) => {
         // thời gian các lần nghe
         let timeList = jsonValue
           .filter((item) => {
-            return item.id == songdata[index].id;
+            return item.id == audioFiles[currentAudioIndex].id;
           })
           .map((item) => item.time)[0];
         if (timeList == undefined) timeList = [];
         // console.log(jsonValue);
         // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
-        if (jsonValue.map((item) => item.id).includes(songdata[index].id)) {
+        if (jsonValue.map((item) => item.id).includes(audioFiles[currentAudioIndex].id)) {
           jsonValue = jsonValue.filter((item) => {
-            return item.id != songdata[index].id;
+            return item.id != audioFiles[currentAudioIndex].id;
           });
         }
         // console.log(timeList);
@@ -240,18 +240,18 @@ const MusicController = ({ idMusicClick, songdata }) => {
         await AsyncStorage.setItem(
           RECENT,
           JSON.stringify([
-            { id: songdata[index].id, time: [...timeList, new Date()] },
+            { id: audioFiles[currentAudioIndex].id, time: [...timeList, new Date()] },
             ...jsonValue,
           ])
         );
       } else
         await AsyncStorage.setItem(
           RECENT,
-          JSON.stringify([{ id: songdata[index].id, time: [new Date()] }])
+          JSON.stringify([{ id: audioFiles[currentAudioIndex].id, time: [new Date()] }])
         );
       // await AsyncStorage.removeItem(RECENT)
     } catch (e) {
-      alert("Failed to fetch the RECENT from storage");
+      alert("Failed to fetch the RECENT from storage", e);
     }
   };
 
