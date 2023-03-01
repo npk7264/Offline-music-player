@@ -112,43 +112,6 @@ const Song = () => {
     }
   };
 
-  // onPlaybackStatusUpdate = async (playbackStatus) => {
-  //   if (playbackStatus.isLoaded && playbackStatus.isPlaying) {
-  //     return contextType.updateState(contextType, {
-  //       playbackPosition: playbackStatus.positionMillis,
-  //       playbackDuration: playbackStatus.durationMillis,
-  //     })
-  //   }
-
-  //   //xu li khi bai hat ket thuc
-  //   if (playbackStatus.didJustFinish) {
-  //     const nextAudioIndex = contextType.currentAudioIndex + 1;
-
-  //     //xu ly khi bai hien tai la bai cuoi cung 
-  //     if (nextAudioIndex >= contextType.audioFiles.length()) {
-  //       contextType.playbackObj.unloadAsync();
-  //       return contextType.updateState(contextType, {
-  //         soundObj: null,
-  //         currentAudio: contextType.audioFiles[0],
-  //         isPlaying: false,
-  //         currentAudioIndex: 0,
-  //         playbackPosition: null,
-  //         playbackDuration: null,
-  //       });
-  //     }
-
-  //     //tu dong chuyen bai khi bai hat ket thuc
-  //     const audio = contextType.audioFiles[nextAudioIndex];
-  //     const status = await playNext(contextType.playbackObj, audio.uri);
-  //     return contextType.updateState(contextType, {
-  //       soundObj: status,
-  //       currentAudio: audio,
-  //       isPlaying: true,
-  //       currentAudioIndex: nextAudioIndex,
-  //     });
-  //   }
-  // }
-
   handleAudioPress = async audio => {
     // const {
     //   playbackObj,
@@ -188,6 +151,7 @@ const Song = () => {
       return contextType.updateState(contextType, {
         soundObj: status,
         isPlaying: false,
+        playbackPosition: status.positionMillis,
       });
     }
 

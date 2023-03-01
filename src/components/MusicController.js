@@ -29,7 +29,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
     updateState, } = context;
 
 
-
+  const [posTime, setPosTime] = useState();
   const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
@@ -84,6 +84,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
       return context.updateState(context, {
         soundObj: status,
         isPlaying: false,
+        playbackPosition: status.positionMillis,
       });
     }
     // resume
@@ -291,15 +292,33 @@ const MusicController = ({ idMusicClick, songdata }) => {
           thumbTintColor="red"
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
-        // onValueChange={(value) => {
-        //   setPosTime(Math.floor(value * durationTime));
-        // }}
-        // onSlidingComplete={async (value) => {
-        //   await scrollSlider(value);
-        // }}
+          onValueChange={(value) => {
+            setPosTime(convertTime(Math.floor(value * playbackDuration)));
+          }}
+          onSlidingStart={
+            async () => {
+              if (!isPlaying) return;
+              try {
+                await pause(playbackObj);
+              } catch (error) {
+                console.log('error inside onSlidingStart', error);
+              }
+            }
+          }
+          onSlidingComplete={async (value) => {
+            if (soundObj === null || !isPlaying) return;
+            try {
+              const status = await playbackObj.setPositionAsync(Math.floor(soundObj.durationMillis * value));
+              updateState(context, { soundObj: status, playbackPosition: status.positionMillis });
+
+              await resume(playbackObj);
+            } catch (error) {
+              console.log('error inside onSlidingComplete', error);
+            }
+          }}
         ></Slider>
         <View style={styles.progressLevelDuration}>
-          <Text style={styles.progressLabelText}>{convertTime(playbackPosition)}</Text>
+          <Text style={styles.progressLabelText}>{posTime ? posTime : convertTime(playbackPosition)}</Text>
           <Text style={styles.progressLabelText}>{convertTime(playbackDuration)}</Text>
         </View>
       </View>
@@ -323,23 +342,23 @@ const MusicController = ({ idMusicClick, songdata }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
-        // onPress={() => {
-        //   const likeState = !like;
-        //   setLike(!like);
-        //   likeState ? saveFavorite() : removeFavorite();
-        // }}
+          onPress={() => {
+            const likeState = !like;
+            setLike(!like);
+            likeState ? saveFavorite() : removeFavorite();
+          }}
         >
           <Icon name={like ? "heart" : "heart-o"} size={25} color="#333" />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
-        // onPress={() => {
-        //   // Pause
-        //   setIsPlaying(false);
-        //   pauseSound();
-        //   // Mở playlist Modal
-        //   setShowPlaylistModal(true);
-        // }}
+          onPress={() => {
+            // Pause
+            // setIsPlaying(false);
+            // pauseSound();
+            // Mở playlist Modal
+            setShowPlaylistModal(true);
+          }}
         >
           <Entypo name="add-to-list" size={25} color={"#333"} />
         </TouchableOpacity>
