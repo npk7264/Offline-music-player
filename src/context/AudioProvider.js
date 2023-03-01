@@ -50,7 +50,7 @@ export class AudioProvider extends Component {
 
             const nextAudioIndex = this.state.currentAudioIndex + 1;
             // there is no next audio to play or the current audio is the last
-            if (nextAudioIndex >= this.state.audioFiles.length()) {
+            if (nextAudioIndex >= this.state.audioFiles.length) {
                 this.state.playbackObj.unloadAsync();
                 return this.updateState(this, {
                     soundObj: null,

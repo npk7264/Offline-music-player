@@ -9,7 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AudioContext } from "../context/AudioProvider";
 import PlaylistModal from "./PlaylistModal";
 import { Entypo } from "@expo/vector-icons";
-import { play, pause, resume } from "../misc/audioController";
+import { play, pause, resume, playNext } from "../misc/audioController";
 
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
@@ -95,6 +95,83 @@ const MusicController = ({ idMusicClick, songdata }) => {
       });
     }
   }
+
+  const handleNext = async () => {
+    //console.log(audioFiles)
+    const { isLoaded } = await playbackObj.getStatusAsync();
+    const isLastAudio = currentAudioIndex + 1 === audioFiles.length;
+    let audio = audioFiles[currentAudioIndex + 1];
+    let index;
+    let status;
+
+    if (!isLoaded && !isLastAudio) {
+      index = currentAudioIndex + 1;
+      status = await play(playbackObj, audio.uri);
+    }
+
+    if (isLoaded && !isLastAudio) {
+      index = currentAudioIndex + 1;
+      status = await playNext(playbackObj, audio.uri);
+    }
+
+    if (isLastAudio) {
+      index = 0;
+      audio = audioFiles[index];
+      if (isLoaded) {
+        status = await playNext(playbackObj, audio.uri);
+      }
+      else {
+        status = await play(playbackObj, audio.uri);
+      }
+    }
+
+    return updateState(context, {
+      currentAudio: audio,
+      playbackObj: playbackObj,
+      soundObj: status,
+      isPlaying: true,
+      currentAudioIndex: index,
+    });
+  }
+
+  const handlePrevious = async () => {
+    //console.log(audioFiles)
+    const { isLoaded } = await playbackObj.getStatusAsync();
+    const isFirstAudio = currentAudioIndex <= 0;
+    let audio = audioFiles[currentAudioIndex - 1];
+    let index;
+    let status;
+
+    if (!isLoaded && !isFirstAudio) {
+      index = currentAudioIndex - 1;
+      status = await play(playbackObj, audio.uri);
+    }
+
+    if (isLoaded && !isFirstAudio) {
+      index = currentAudioIndex - 1;
+      status = await playNext(playbackObj, audio.uri);
+    }
+
+    if (isFirstAudio) {
+      index = audioFiles.length - 1;
+      audio = audioFiles[index];
+      if (isLoaded) {
+        status = await playNext(playbackObj, audio.uri);
+      }
+      else {
+        status = await play(playbackObj, audio.uri);
+      }
+    }
+
+    return updateState(context, {
+      currentAudio: audio,
+      playbackObj: playbackObj,
+      soundObj: status,
+      isPlaying: true,
+      currentAudioIndex: index,
+    });
+  }
+
 
   // xử lí dữ liệu
   const saveFavorite = async () => {
@@ -271,7 +348,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
       {/* thanh điều khiển previous, play/pause, next */}
       <View style={styles.controllerContainer}>
         {/* xử lí sự kiện khi nhấn nút Previous */}
-        <TouchableOpacity style={styles.controllerItem} >
+        <TouchableOpacity
+          style={styles.controllerItem}
+          onPress={handlePrevious} >
           <Icon name="step-backward" size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
@@ -286,7 +365,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
           />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Next */}
-        <TouchableOpacity style={styles.controllerItem} >
+        <TouchableOpacity
+          style={styles.controllerItem}
+          onPress={handleNext} >
           <Icon name="step-forward" size={35} color="#333" />
         </TouchableOpacity>
       </View>

@@ -106,7 +106,7 @@ const Song = () => {
 
       context.updateNewData(songData.concat(uris));
       setLocalData(songData.concat(uris));
-      return contextType.updateState(contextType, { audioFiles: localData });
+      return contextType.updateState(contextType, { audioFiles: songData.concat(uris) });
     } catch (error) {
       console.error(error);
     }
