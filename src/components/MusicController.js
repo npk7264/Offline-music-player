@@ -30,7 +30,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
 
 
   const [posTime, setPosTime] = useState();
-  const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
+  //const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
 
@@ -173,6 +173,10 @@ const MusicController = ({ idMusicClick, songdata }) => {
     });
   }
 
+  const repeatSong = async (flag) => {
+    await playbackObj.setIsLoopingAsync(flag);
+  };
+
 
   // xử lí dữ liệu
   const saveFavorite = async () => {
@@ -260,6 +264,16 @@ const MusicController = ({ idMusicClick, songdata }) => {
     readFavorite();
   }, []);
 
+  // xử lí khi index bài hát thay đổi (thao tác next, previous, trạng thái like)
+  useEffect(() => {
+    console.log("MOVE to NEXT or PREVIOUS");
+
+    readFavorite();
+    saveRecent();
+
+    setRepeat(false);
+  }, [currentAudioIndex]);
+
 
   // xử lí trạng thái trả về từ PlaylistModal
   const turnOffModal = () => {
@@ -327,12 +341,12 @@ const MusicController = ({ idMusicClick, songdata }) => {
       <View style={[styles.controllerContainer, { height: 60 }]}>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
-        // onPress={() => {
-        //   // isPlaying ? playSoundFirstTime() : replaySoundPause();
-        //   const flag = !isRepeat;
-        //   setRepeat(flag);
-        //   repeatSong(flag);
-        // }}
+          onPress={async () => {
+            // isPlaying ? playSoundFirstTime() : replaySoundPause();
+            // const flag = !isRepeat;
+            // setRepeat(flag);
+            // await repeatSong(flag);
+          }}
         >
           <MaterialCommunityIcons
             name={isRepeat ? "repeat-once" : "repeat"}
