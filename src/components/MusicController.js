@@ -16,7 +16,7 @@ import TextTicker from "react-native-text-ticker";
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
 
-const MusicController = ({ idMusicClick, songdata }) => {
+const MusicController = () => {
   const context = useContext(AudioContext);
   const {
     audioFiles,
@@ -295,7 +295,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
           marqueeDelay={1000}
           duration={10000}
         >
-          {songdata[index].name}
+          {audioFiles[currentAudioIndex].name}
         </TextTicker>
         <Text style={{ fontSize: 20, color: "gray" }}>
           {currentAudio.singer}
