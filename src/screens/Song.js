@@ -157,7 +157,7 @@ const Song = () => {
         Option={Option}
       />
 
-      <PlayerMini></PlayerMini>
+      {/* <PlayerMini></PlayerMini> */}
     </SafeAreaView>
   );
 };
