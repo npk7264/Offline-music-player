@@ -112,35 +112,23 @@ const Song = () => {
     }
   };
 
-  handleAudioPress = async audio => {
-    // const {
-    //   playbackObj,
-    //   soundObj,
-    //   currentAudio,
-    //   updateState,
-    // } = contextType;
-
+  handleAudioPress = async (audio, data) => {
     // playing audio for the first time
-    console.log('hi');
-    console.log(audio);
-    console.log(contextType.soundObj);
-    console.log('end');
     if (contextType.soundObj === null) {
-      console.log('play');
       const playbackObj = new Audio.Sound();
       const status = await play(playbackObj, audio.uri);
-      const index = contextType.audioFiles.indexOf(audio);
+      const index = data.indexOf(audio);
       contextType.updateState(contextType, {
         currentAudio: audio,
         playbackObj: playbackObj,
         soundObj: status,
         currentAudioIndex: index,
         isPlaying: true,
+        activePlayList: data,
       });
       return playbackObj.setOnPlaybackStatusUpdate(contextType.onPlaybackStatusUpdate)
     }
-    else
-      console.log('co null dau');
+
 
     //pause audio
     if (contextType.soundObj.isLoaded
@@ -171,18 +159,13 @@ const Song = () => {
     if (contextType.soundObj.isLoaded && contextType.currentAudio.id !== audio.id) {
       console.log('another');
       const status = await playNext(contextType.playbackObj, audio.uri);
-      const index = contextType.audioFiles.indexOf(audio);
-      const currentAudio = {
-        id: audio.id,
-        name: audio.name,
-        singer: audio.singer,
-        uri: audio.uri
-      };
+      const index = data.indexOf(audio);
       return contextType.updateState(contextType, {
-        currentAudio,
+        currentAudio: audio,
         soundObj: status,
         isPlaying: true,
         currentAudioIndex: index,
+        activePlayList: data,
       });
     }
   }
@@ -219,14 +202,13 @@ const Song = () => {
         renderItem={({ item }) => (
           <SongItem
             info={item}
-            songdata={
-              sortOption === "NgayThem"
+            onAudioPress={() => {
+              this.handleAudioPress(item, sortOption === "NgayThem"
                 ? localData
                 : sortOption === "NgheSi"
                   ? resultNgheSi
-                  : resultBaiHat
-            }
-            onAudioPress={() => this.handleAudioPress(item)}
+                  : resultBaiHat);
+            }}
           />
         )}
         keyExtractor={(item, index) => index}

@@ -100,13 +100,11 @@ const MusicController = () => {
   }
 
   const handleNext = async () => {
-    //console.log(audioFiles)
     const { isLoaded } = await playbackObj.getStatusAsync();
-    const isLastAudio = currentAudioIndex + 1 === audioFiles.length;
-    let audio = audioFiles[currentAudioIndex + 1];
+    const isLastAudio = currentAudioIndex + 1 === activePlayList.length;
+    let audio = activePlayList[currentAudioIndex + 1];
     let index;
     let status;
-
     if (!isLoaded && !isLastAudio) {
       index = currentAudioIndex + 1;
       status = await play(playbackObj, audio.uri);
@@ -119,7 +117,7 @@ const MusicController = () => {
 
     if (isLastAudio) {
       index = 0;
-      audio = audioFiles[index];
+      audio = activePlayList[index];
       if (isLoaded) {
         status = await playNext(playbackObj, audio.uri);
       }
@@ -138,10 +136,9 @@ const MusicController = () => {
   }
 
   const handlePrevious = async () => {
-    //console.log(audioFiles)
     const { isLoaded } = await playbackObj.getStatusAsync();
     const isFirstAudio = currentAudioIndex === 0;
-    let audio = audioFiles[currentAudioIndex - 1];
+    let audio = activePlayList[currentAudioIndex - 1];
     let index;
     let status;
 
@@ -156,8 +153,8 @@ const MusicController = () => {
     }
 
     if (isFirstAudio) {
-      index = audioFiles.length - 1;
-      audio = audioFiles[index];
+      index = activePlayList.length - 1;
+      audio = activePlayList[index];
       if (isLoaded) {
         status = await playNext(playbackObj, audio.uri);
       }
@@ -186,7 +183,7 @@ const MusicController = () => {
     try {
       await AsyncStorage.setItem(
         FAVORITE,
-        JSON.stringify([...listLike, audioFiles[currentAudioIndex].id])
+        JSON.stringify([...listLike, activePlayList[currentAudioIndex].id])
       );
       // alert("Data successfully saved");
     } catch (e) {
@@ -199,7 +196,7 @@ const MusicController = () => {
         FAVORITE,
         JSON.stringify(
           listLike.filter((item) => {
-            return item !== audioFiles[currentAudioIndex].id;
+            return item !== activePlayList[currentAudioIndex].id;
           })
         )
       );
@@ -213,7 +210,7 @@ const MusicController = () => {
       const value = await AsyncStorage.getItem(FAVORITE);
       if (value !== null && value !== []) {
         setListLike(JSON.parse(value));
-        setLike(JSON.parse(value).includes(audioFiles[currentAudioIndex].id));
+        setLike(JSON.parse(value).includes(activePlayList[currentAudioIndex].id));
       }
     } catch (e) {
       alert("Failed to fetch the input from storage", e);
@@ -231,30 +228,29 @@ const MusicController = () => {
         // thời gian các lần nghe
         let timeList = jsonValue
           .filter((item) => {
-            return item.id == audioFiles[currentAudioIndex].id;
+            return item.id == activePlayList[currentAudioIndex].id;
           })
           .map((item) => item.time)[0];
         if (timeList == undefined) timeList = [];
-        // console.log(jsonValue);
         // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
-        if (jsonValue.map((item) => item.id).includes(audioFiles[currentAudioIndex].id)) {
+        if (jsonValue.map((item) => item.id).includes(activePlayList[currentAudioIndex].id)) {
           jsonValue = jsonValue.filter((item) => {
-            return item.id != audioFiles[currentAudioIndex].id;
+            return item.id != activePlayList[currentAudioIndex].id;
           });
         }
-        // console.log(timeList);
+
         //lưu
         await AsyncStorage.setItem(
           RECENT,
           JSON.stringify([
-            { id: audioFiles[currentAudioIndex].id, time: [...timeList, new Date()] },
+            { id: activePlayList[currentAudioIndex].id, time: [...timeList, new Date()] },
             ...jsonValue,
           ])
         );
       } else
         await AsyncStorage.setItem(
           RECENT,
-          JSON.stringify([{ id: audioFiles[currentAudioIndex].id, time: [new Date()] }])
+          JSON.stringify([{ id: activePlayList[currentAudioIndex].id, time: [new Date()] }])
         );
       // await AsyncStorage.removeItem(RECENT)
     } catch (e) {
@@ -295,7 +291,7 @@ const MusicController = () => {
           marqueeDelay={1000}
           duration={10000}
         >
-          {audioFiles[currentAudioIndex].name}
+          {currentAudio.name}
         </TextTicker>
         <Text style={{ fontSize: 20, color: "gray" }}>
           {currentAudio.singer}

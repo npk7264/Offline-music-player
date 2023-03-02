@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
-
+import { AudioContext } from "../context/AudioProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { Audio } from "expo-av";
 
-const SongItem = ({ info, screen, playlist, songdata, onAudioPress }) => {
+
+const SongItem = ({ info, screen, playlist, onAudioPress }) => {
   const navigation = useNavigation();
-
+  const context = useContext(AudioContext);
   const [songInPlaylist, setSongInPlaylist] = useState([]);
 
   // lưu bài hát vào playlist
@@ -57,8 +57,9 @@ const SongItem = ({ info, screen, playlist, songdata, onAudioPress }) => {
         // thêm nhạc vào danh sách phát
         if (screen == "AddSongToPlaylist") saveSongToPlaylist();
         // phát nhạc
-        else
+        else {
           onAudioPress();
+        }
         //navigation.navigate("Player", { info, songdata });
       }}
     >
