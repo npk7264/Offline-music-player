@@ -4,10 +4,59 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { AudioContext } from "../context/AudioProvider";
+import { play, pause, playNext, resume } from "../misc/audioController";
 const PlayerMini = () => {
     const context = useContext(AudioContext);
+    const { audioFiles,
+        playbackObj,
+        soundObj,
+        currentAudio,
+        isPlaying,
+        currentAudioIndex,
+        playbackPosition,
+        playbackDuration,
+        activePlayList,
+        updateState, } = context;
     const navigation = useNavigation();
-    const [playing, setPlaying] = useState(false);
+
+    const convertValueSlider = () => {
+        if (playbackPosition !== null && playbackDuration !== null)
+            return playbackPosition / playbackDuration;
+        return 0;
+    };
+
+    const handlePlayPause = async () => {
+        // play
+        if (soundObj === null) {
+            const audio = currentAudio;
+            const status = await play(playbackObj, audio.uri);
+            context.playbackObj.setOnPlaybackStatusUpdate(context.onPlaybackStatusUpdate);
+            return context.updateState(context, {
+                soundObj: status,
+                currentAudio: audio,
+                isPlaying: true,
+                currentAudioIndex: currentAudioIndex,
+            });
+        }
+        // pause
+        if (soundObj && soundObj.isPlaying) {
+            const status = await pause(playbackObj);
+            return context.updateState(context, {
+                soundObj: status,
+                isPlaying: false,
+                playbackPosition: status.positionMillis,
+            });
+        }
+        // resume
+        if (context.soundObj && !context.soundObj.isPlaying) {
+            const status = await resume(playbackObj);
+            return context.updateState(context, {
+                soundObj: status,
+                isPlaying: true,
+            });
+        }
+    }
+
     return (
         <TouchableOpacity style={styles.view}
             onPress={() =>
@@ -17,7 +66,7 @@ const PlayerMini = () => {
         >
             <Slider
                 disabled={true}
-                value={0.15}
+                value={convertValueSlider()}
             ></Slider>
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 <View style={{ flex: 2, marginLeft: 15 }}>
@@ -28,12 +77,11 @@ const PlayerMini = () => {
                 <View style={styles.controllerContainer}>
                     <TouchableOpacity
                         style={styles.controllerItem}
-                        onPress={() => {
-                            setPlaying(!playing);
-                        }}
+                        onPress={handlePlayPause}
                     >
+                        {isPlaying}
                         <Icon
-                            name={playing ? "play" : "pause"}
+                            name={!isPlaying ? "play" : "pause"}
                             size={25}
                             color="#fff"
                         />
