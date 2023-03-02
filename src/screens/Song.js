@@ -24,7 +24,7 @@ import { AudioContext } from "../context/AudioProvider";
 import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from "@react-navigation/native";
 
-import { play, pause, resume, playNext } from "../misc/audioController";
+import { play, pause, resume, playNext, handleAudioPress } from "../misc/audioController";
 import { Audio } from "expo-av";
 
 // chuyen ve tieng Viet khong dau
@@ -112,64 +112,6 @@ const Song = () => {
     }
   };
 
-  handleAudioPress = async (audio, data) => {
-    // playing audio for the first time
-    if (contextType.soundObj === null) {
-      const playbackObj = new Audio.Sound();
-      const status = await play(playbackObj, audio.uri);
-      const index = data.indexOf(audio);
-      contextType.updateState(contextType, {
-        currentAudio: audio,
-        playbackObj: playbackObj,
-        soundObj: status,
-        currentAudioIndex: index,
-        isPlaying: true,
-        activePlayList: data,
-      });
-      return playbackObj.setOnPlaybackStatusUpdate(contextType.onPlaybackStatusUpdate)
-    }
-
-
-    //pause audio
-    if (contextType.soundObj.isLoaded
-      && contextType.soundObj.isPlaying
-      && contextType.currentAudio.id === audio.id) {
-      console.log('pause');
-      const status = await pause(contextType.playbackObj)
-      return contextType.updateState(contextType, {
-        soundObj: status,
-        isPlaying: false,
-        playbackPosition: status.positionMillis,
-      });
-    }
-
-    //resume audio
-    if (contextType.soundObj.isLoaded
-      && !contextType.soundObj.isPlaying
-      && contextType.currentAudio.id === audio.id) {
-      console.log('resume');
-      const status = await resume(contextType.playbackObj);
-      return contextType.updateState(contextType, {
-        soundObj: status,
-        isPlaying: true,
-      });
-    }
-
-    // select another audio
-    if (contextType.soundObj.isLoaded && contextType.currentAudio.id !== audio.id) {
-      console.log('another');
-      const status = await playNext(contextType.playbackObj, audio.uri);
-      const index = data.indexOf(audio);
-      return contextType.updateState(contextType, {
-        currentAudio: audio,
-        soundObj: status,
-        isPlaying: true,
-        currentAudioIndex: index,
-        activePlayList: data,
-      });
-    }
-  }
-
   useEffect(() => {
     getAllAudioFilesFromDevice();
   }, []);
@@ -203,11 +145,11 @@ const Song = () => {
           <SongItem
             info={item}
             onAudioPress={() => {
-              this.handleAudioPress(item, sortOption === "NgayThem"
+              handleAudioPress(item, sortOption === "NgayThem"
                 ? localData
                 : sortOption === "NgheSi"
                   ? resultNgheSi
-                  : resultBaiHat);
+                  : resultBaiHat, contextType);
             }}
           />
         )}

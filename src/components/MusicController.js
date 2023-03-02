@@ -32,7 +32,7 @@ const MusicController = () => {
 
 
   const [posTime, setPosTime] = useState();
-  //const [index, setIndex] = useState(idMusicClick); // lưu index nhạc trong playlist
+
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
 
@@ -216,7 +216,6 @@ const MusicController = () => {
       alert("Failed to fetch the input from storage", e);
     }
   };
-
   const saveRecent = async () => {
     try {
       // ĐỌC DỮ LIỆU từ Async Storage để set ListRecent
@@ -368,9 +367,6 @@ const MusicController = () => {
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
-            // Pause
-            // setIsPlaying(false);
-            // pauseSound();
             // Mở playlist Modal
             setShowPlaylistModal(true);
           }}
@@ -405,9 +401,7 @@ const MusicController = () => {
           <Icon name="step-forward" size={35} color="#333" />
         </TouchableOpacity>
       </View>
-      {/* <Text>
-        {index.toString()} + {isPlaying.toString()} + {isRepeat.toString()}
-      </Text> */}
+
       <PlaylistModal
         showPlaylistModal={showPlaylistModal}
         onData={turnOffModal}
