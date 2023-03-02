@@ -31,7 +31,7 @@ export class AudioProvider extends Component {
         }
 
 
-        if (playbackStatus.didJustFinish) {
+        if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
             if (this.state.isPlayListRunning) {
                 let audio;
 

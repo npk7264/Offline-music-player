@@ -138,7 +138,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
   const handlePrevious = async () => {
     //console.log(audioFiles)
     const { isLoaded } = await playbackObj.getStatusAsync();
-    const isFirstAudio = currentAudioIndex <= 0;
+    const isFirstAudio = currentAudioIndex === 0;
     let audio = audioFiles[currentAudioIndex - 1];
     let index;
     let status;
@@ -173,8 +173,9 @@ const MusicController = ({ idMusicClick, songdata }) => {
     });
   }
 
-  const repeatSong = async (flag) => {
-    await playbackObj.setIsLoopingAsync(flag);
+  const handleRepeat = async () => {
+    await playbackObj.setIsLoopingAsync(!isRepeat);
+    setRepeat(!isRepeat);
   };
 
 
@@ -341,12 +342,7 @@ const MusicController = ({ idMusicClick, songdata }) => {
       <View style={[styles.controllerContainer, { height: 60 }]}>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
-          onPress={async () => {
-            // isPlaying ? playSoundFirstTime() : replaySoundPause();
-            // const flag = !isRepeat;
-            // setRepeat(flag);
-            // await repeatSong(flag);
-          }}
+          onPress={handleRepeat}
         >
           <MaterialCommunityIcons
             name={isRepeat ? "repeat-once" : "repeat"}
