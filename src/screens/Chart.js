@@ -16,13 +16,16 @@ import SongItem from "../components/SongItem";
 import Title from "../components/Title";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioProvider";
+import { handleAudioPress } from "../misc/audioController";
+import PlayerMini from "../components/PlayerMini";
 
 const RECENT = "RECENT";
 
 const Chart = () => {
+  const contextType = useContext(AudioContext);
   const context = useContext(DataContext);
   const [listRecent, setListRecent] = useState([]);
   const [timeFilter, setTime] = useState("day");
@@ -63,12 +66,12 @@ const Chart = () => {
       // lọc ngày hôm nay
       return timeFilter === "day"
         ? tdate.getDate() === date.getDate() &&
-            tdate.getMonth() === date.getMonth() &&
-            tdate.getFullYear() === date.getFullYear()
+        tdate.getMonth() === date.getMonth() &&
+        tdate.getFullYear() === date.getFullYear()
         : // lọc theo tháng hiện tại
         timeFilter === "month"
-        ? tdate.getMonth() === date.getMonth()
-        : // lọc theo năm hiện tại
+          ? tdate.getMonth() === date.getMonth()
+          : // lọc theo năm hiện tại
           tdate.getFullYear() === date.getFullYear();
     });
     // cập nhật time mới cho item
@@ -168,10 +171,12 @@ const Chart = () => {
         style={{ flex: 1 }}
         data={recentData}
         renderItem={({ item }) => (
-          <SongItem info={item} songdata={recentData} />
+          <SongItem info={item} onAudioPress={() => { handleAudioPress(item, recentData, contextType) }} />
         )}
         keyExtractor={(item) => item.id}
       />
+
+      {contextType.soundObj !== null && <PlayerMini ></PlayerMini>}
     </SafeAreaView>
   );
 };

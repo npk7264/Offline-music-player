@@ -14,16 +14,15 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BackBar from "../components/BackBar";
-import { songData } from "../../data/songData";
+
 import { DataContext } from "../context/DataContext";
 // import SongItem from "../components/SongItem";
 import SongModal from "../components/SongModal";
 import Title from "../components/Title";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { AudioContext } from "../context/AudioProvider";
-import { play, pause, playNext, resume, handleAudioPress } from "../misc/audioController";
-import { Audio } from "expo-av";
-
+import { handleAudioPress } from "../misc/audioController";
+import PlayerMini from "../components/PlayerMini";
 const DetailPlaylist = ({ route }) => {
   const context = useContext(DataContext);
   const contextType = useContext(AudioContext);
@@ -130,7 +129,7 @@ const DetailPlaylist = ({ route }) => {
           </Text>
           <Text style={{ fontSize: 16, color: "gray" }}>{info.singer}</Text>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity >
     );
   };
 
@@ -227,6 +226,7 @@ const DetailPlaylist = ({ route }) => {
         onData={turnOffModal}
         playlistName={route.params.name}
       />
+      {contextType.soundObj !== null && <PlayerMini ></PlayerMini>}
     </SafeAreaView>
   );
 };

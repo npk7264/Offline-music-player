@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { AudioContext } from "../context/AudioProvider";
+
 
 const ArtistItem = ({ artist, songs }) => {
   const navigation = useNavigation();
-
+  const contextType = useContext(AudioContext);
   return (
     <TouchableOpacity
       style={{

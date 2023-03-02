@@ -26,6 +26,7 @@ export default function App() {
           >
             <Stack.Screen name="BottomMenu" component={BottomMenu} />
             <Stack.Screen name="Player" component={Player} />
+            <Stack.Screen name="DetailArtist" component={DetailArtist} />
             <Stack.Screen name="Search" component={Search} />
             <Stack.Screen name="DetailPlaylist" component={DetailPlaylist} />
           </Stack.Navigator>

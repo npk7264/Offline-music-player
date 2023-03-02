@@ -13,15 +13,17 @@ import { Entypo } from "@expo/vector-icons";
 
 import SongItem from "../components/SongItem";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
-import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioProvider";
+import { handleAudioPress } from "../misc/audioController";
 
 const PLAYLIST = "PLAYLIST";
 
 const Search = () => {
+  const contextType = useContext(AudioContext);
   const context = useContext(DataContext);
   const navigation = useNavigation();
 
@@ -117,10 +119,11 @@ const Search = () => {
             style={styles.button}
             onPress={() => {
               const firstSong = searchResult[0];
-              navigation.navigate("Player", {
-                info: firstSong,
-                songdata: searchResult,
-              });
+              // navigation.navigate("Player", {
+              //   info: firstSong,
+              //   songdata: searchResult,
+              // });
+              handleAudioPress(firstSong, searchResult, contextType)
             }}
           >
             <Icon name="play" size={25} color="#fff" />
@@ -146,7 +149,7 @@ const Search = () => {
       <FlatList
         data={searchResult}
         renderItem={({ item }) => (
-          <SongItem info={item} songdata={searchResult} />
+          <SongItem info={item} onAudioPress={() => { handleAudioPress(item, recentData, contextType) }} />
         )}
         keyExtractor={(item) => item.id}
       />

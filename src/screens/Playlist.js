@@ -9,21 +9,22 @@ import {
   View,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 // import PlaylistItem from "../components/PlaylistItem";
 import Title from "../components/Title";
-
+import PlayerMini from "../components/PlayerMini";
+import { AudioContext } from "../context/AudioProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PLAYLIST = "PLAYLIST";
 
 const Playlist = () => {
   const navigation = useNavigation();
-
+  const contextType = useContext(AudioContext);
   const [inputPlaylist, setInputPlaylist] = useState(""); // tên playlist mới
   const [playlistList, setPlaylistList] = useState([]); // danh sách playlist đã tạo
 
@@ -147,6 +148,8 @@ const Playlist = () => {
         renderItem={({ item }) => <PlaylistItem name={item} />}
         keyExtractor={(item) => item}
       />
+
+      {contextType.soundObj !== null && <PlayerMini ></PlayerMini>}
     </SafeAreaView>
   );
 };

@@ -15,14 +15,17 @@ import SearchBar from "../components/SearchBar";
 import SongItem from "../components/SongItem";
 import Title from "../components/Title";
 
-import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioProvider";
+import { handleAudioPress } from "../misc/audioController";
+import PlayerMini from "../components/PlayerMini";
 
 const RECENT = "RECENT";
 
 const Recent = () => {
+  const contextType = useContext(AudioContext);
   const context = useContext(DataContext);
   const [listRecent, setListRecent] = useState([]);
 
@@ -91,7 +94,7 @@ const Recent = () => {
         style={{ flex: 1 }}
         data={recentData}
         renderItem={({ item }) => (
-          <SongItem info={item} songdata={recentData} />
+          <SongItem info={item} onAudioPress={() => { handleAudioPress(item, recentData, contextType) }} />
         )}
         keyExtractor={(item) => item.id}
       />
@@ -126,6 +129,7 @@ const Recent = () => {
           </Text>
         </View>
       )}
+      {contextType.soundObj !== null && <PlayerMini ></PlayerMini>}
     </SafeAreaView>
   );
 };

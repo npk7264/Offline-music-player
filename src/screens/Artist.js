@@ -3,20 +3,19 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Button,
+
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 
 import SearchBar from "../components/SearchBar";
 import ArtistItem from "../components/ArtistItem";
 import Title from "../components/Title";
-import { songData } from "../../data/songData";
 import { DataContext } from "../context/DataContext";
+import PlayerMini from "../components/PlayerMini";
+import { AudioContext } from "../context/AudioProvider";
 
 const Artist = () => {
+  const contextType = useContext(AudioContext);
   const context = useContext(DataContext);
 
   return (
@@ -41,6 +40,7 @@ const Artist = () => {
         )}
         keyExtractor={(item, index) => index}
       />
+      {contextType.soundObj !== null && <PlayerMini ></PlayerMini>}
     </SafeAreaView>
   );
 };
