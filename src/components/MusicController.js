@@ -10,6 +10,8 @@ import { AudioContext } from "../context/AudioProvider";
 import PlaylistModal from "./PlaylistModal";
 import { Entypo } from "@expo/vector-icons";
 import { play, pause, resume, playNext } from "../misc/audioController";
+import TextTicker from "react-native-text-ticker";
+
 
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
@@ -285,9 +287,16 @@ const MusicController = ({ idMusicClick, songdata }) => {
     <View>
       {/* Thông tin nhạc */}
       <View style={styles.songInfo}>
-        <Text style={{ fontSize: 25 }} numberOfLines={1}>
-          {currentAudio.name}
-        </Text>
+        <TextTicker
+          style={{ fontSize: 25 }}
+          loop
+          bounce={false}
+          repeatSpacer={50}
+          marqueeDelay={1000}
+          duration={10000}
+        >
+          {songdata[index].name}
+        </TextTicker>
         <Text style={{ fontSize: 20, color: "gray" }}>
           {currentAudio.singer}
         </Text>

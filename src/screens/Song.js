@@ -238,7 +238,9 @@ const Song = () => {
         sortOption={sortOption}
         Option={Option}
       />
+
       {contextType.soundObj !== null && <PlayerMini ></PlayerMini>}
+
     </SafeAreaView>
   );
 };
