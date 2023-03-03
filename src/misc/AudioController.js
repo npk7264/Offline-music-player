@@ -19,10 +19,25 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
     await contextAudio.audioState.soundObj.stopAsync();
     await contextAudio.audioState.soundObj.unloadAsync();
 
-    // file nhạc
+    // file nhac
     const uri = songdata[index].uri;
     const { sound, status } = await Audio.Sound.createAsync(
-      songdata[index].id < songData.length ? songdata[index].uri : { uri }
+      songdata[index].id < songData.length ? songdata[index].uri : { uri },
+      {},
+      (status) => {
+        if (status.isLoaded && status.isPlaying) {
+          console.log(10);
+          // contextAudio.updateState({
+          //   ...contextAudio.audioState,
+          //   currentPosition: status.positionMillis,
+          // });
+        }
+        if (status.didJustFinish) {
+          // if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
+          // else nextSong();
+          console.log("finish");
+        }
+      }
     );
     await contextAudio.updateState({
       ...contextAudio.audioState,
@@ -33,6 +48,7 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
       currentIndex: index,
       currentInfo: info,
       currentPlaylist: songdata,
+      currentDuration: status.durationMillis,
     });
     await sound.playAsync();
   } catch (error) {
@@ -56,7 +72,22 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
       // file nhac
       const uri = songdata[index].uri;
       const { sound, status } = await Audio.Sound.createAsync(
-        songdata[index].id < songData.length ? songdata[index].uri : { uri }
+        songdata[index].id < songData.length ? songdata[index].uri : { uri },
+        {},
+        (status) => {
+          if (status.isLoaded && status.isPlaying) {
+            console.log(status.positionMillis);
+            // contextAudio.updateState({
+            //   ...contextAudio.audioState,
+            //   currentPosition: status.positionMillis,
+            // });
+          }
+          if (status.didJustFinish) {
+            // if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
+            // else nextSong();
+            console.log("finish");
+          }
+        }
       );
       await contextAudio.updateState({
         ...contextAudio.audioState,
