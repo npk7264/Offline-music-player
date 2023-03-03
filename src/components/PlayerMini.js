@@ -77,7 +77,7 @@ const PlayerMini = () => {
                 <View style={styles.controllerContainer}>
                     <TouchableOpacity
                         style={styles.controllerItem}
-                        onPress={handlePlayPause}
+                        onPress={() => { handlePlayPause() }}
                     >
                         {isPlaying}
                         <Icon

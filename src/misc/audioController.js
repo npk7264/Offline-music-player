@@ -58,7 +58,6 @@ export const handleAudioPress = async (audio, data, contextType) => {
         return playbackObj.setOnPlaybackStatusUpdate(contextType.onPlaybackStatusUpdate)
     }
 
-
     //pause audio
     if (contextType.soundObj.isLoaded
         && contextType.soundObj.isPlaying

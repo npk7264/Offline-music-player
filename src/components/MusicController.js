@@ -2,15 +2,13 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider";
-import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AudioContext } from "../context/AudioProvider";
 import PlaylistModal from "./PlaylistModal";
 import { Entypo } from "@expo/vector-icons";
 import { play, pause, resume, playNext } from "../misc/audioController";
-import TextTicker from "react-native-text-ticker";
+//import TextTicker from "react-native-text-ticker";
 
 
 const FAVORITE = "FAVORITE";
@@ -282,7 +280,7 @@ const MusicController = () => {
     <View>
       {/* Thông tin nhạc */}
       <View style={styles.songInfo}>
-        <TextTicker
+        <Text
           style={{ fontSize: 25 }}
           loop
           bounce={false}
@@ -291,7 +289,7 @@ const MusicController = () => {
           duration={10000}
         >
           {currentAudio.name}
-        </TextTicker>
+        </Text>
         <Text style={{ fontSize: 20, color: "gray" }}>
           {currentAudio.singer}
         </Text>
@@ -346,7 +344,7 @@ const MusicController = () => {
       <View style={[styles.controllerContainer, { height: 60 }]}>
         <TouchableOpacity
           style={[styles.controllerItem, { height: 40, width: 40 }]}
-          onPress={handleRepeat}
+          onPress={() => { handleRepeat() }}
         >
           <MaterialCommunityIcons
             name={isRepeat ? "repeat-once" : "repeat"}
@@ -380,13 +378,13 @@ const MusicController = () => {
         {/* xử lí sự kiện khi nhấn nút Previous */}
         <TouchableOpacity
           style={styles.controllerItem}
-          onPress={handlePrevious} >
+          onPress={() => { handlePrevious() }} >
           <Icon name="step-backward" size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
         <TouchableOpacity
           style={styles.controllerItem}
-          onPress={handlePlayPause}
+          onPress={() => { handlePlayPause() }}
         >
           <Icon
             name={!isPlaying ? "play" : "pause"}
@@ -397,7 +395,7 @@ const MusicController = () => {
         {/* xử lí sự kiện khi nhấn nút Next */}
         <TouchableOpacity
           style={styles.controllerItem}
-          onPress={handleNext} >
+          onPress={() => { handleNext() }} >
           <Icon name="step-forward" size={35} color="#333" />
         </TouchableOpacity>
       </View>
