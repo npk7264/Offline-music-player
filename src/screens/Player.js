@@ -15,9 +15,7 @@ import MusicController from "../components/MusicController";
 import Title from "../components/Title";
 
 // route: dữ liệu được navigate tới
-const Player = ({ route }) => {
-  const playlist = route.params.songdata;
-  const song = route.params.info;
+const Player = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar></StatusBar>
@@ -42,14 +40,7 @@ const Player = ({ route }) => {
           />
         </View>
       </View>
-      <MusicController
-        idMusicClick={playlist
-          .map((item) => {
-            return item.id;
-          })
-          .indexOf(song.id)}
-        songdata={playlist}
-      />
+      <MusicController />
     </SafeAreaView>
   );
 };

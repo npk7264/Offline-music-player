@@ -18,11 +18,14 @@ import Title from "../components/Title";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
 
 const FAVORITE = "FAVORITE";
 
 const Favorite = () => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
   const [favoriteList, setFavoriteList] = useState([]);
   const navigation = useNavigation();
 
@@ -183,6 +186,9 @@ const Favorite = () => {
             Xoá tất cả
           </Text>
         </View>
+      )}
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
       )}
     </SafeAreaView>
   );

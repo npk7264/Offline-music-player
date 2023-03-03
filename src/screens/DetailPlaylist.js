@@ -21,8 +21,12 @@ import SongModal from "../components/SongModal";
 import Title from "../components/Title";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
+
 const DetailPlaylist = ({ route }) => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
   const navigation = useNavigation();
 
   // component songitem
@@ -157,6 +161,9 @@ const DetailPlaylist = ({ route }) => {
         )}
         keyExtractor={(item) => item.id}
       />
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )}
       {/* SongModal */}
       <SongModal
         showSongModal={showSongModal}

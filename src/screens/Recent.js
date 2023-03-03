@@ -19,11 +19,14 @@ import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
 
 const RECENT = "RECENT";
 
 const Recent = () => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
   const [listRecent, setListRecent] = useState([]);
 
   const readRecent = async () => {
@@ -125,6 +128,9 @@ const Recent = () => {
             Xoá lịch sử nghe
           </Text>
         </View>
+      )}
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
       )}
     </SafeAreaView>
   );

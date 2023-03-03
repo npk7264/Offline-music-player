@@ -1,6 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
+
+import { AudioContext } from "../context/AudioContext";
+import { handleAudioPress, playSound } from "../misc/AudioController";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -8,6 +11,7 @@ import { Audio } from "expo-av";
 
 const SongItem = ({ info, screen, playlist, songdata }) => {
   const navigation = useNavigation();
+  const contextAudio = useContext(AudioContext);
 
   const [songInPlaylist, setSongInPlaylist] = useState([]);
 
@@ -57,7 +61,16 @@ const SongItem = ({ info, screen, playlist, songdata }) => {
         // thêm nhạc vào danh sách phát
         if (screen == "AddSongToPlaylist") saveSongToPlaylist();
         // phát nhạc
-        else navigation.navigate("Player", { info, songdata });
+        else {
+          const index = songdata
+            .map((item) => {
+              return item.id;
+            })
+            .indexOf(info.id);
+          handleAudioPress(contextAudio, index, info, songdata);
+
+          // navigation.navigate("Player", { info, songdata });
+        }
       }}
     >
       <View
@@ -68,7 +81,6 @@ const SongItem = ({ info, screen, playlist, songdata }) => {
         </Text>
         <Text style={{ fontSize: 16, color: "gray" }}>{info.singer}</Text>
       </View>
-
     </TouchableOpacity>
   );
 };

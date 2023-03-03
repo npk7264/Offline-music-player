@@ -9,13 +9,16 @@ import {
   View,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import SearchBar from "../components/SearchBar";
 // import PlaylistItem from "../components/PlaylistItem";
 import Title from "../components/Title";
+
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -102,6 +105,7 @@ const Playlist = () => {
 
   // refesh khi nhấn vào tab
   const isFocused = useIsFocused();
+  const contextAudio = useContext(AudioContext);
 
   useEffect(() => {
     readPlaylist();
@@ -147,6 +151,9 @@ const Playlist = () => {
         renderItem={({ item }) => <PlaylistItem name={item} />}
         keyExtractor={(item) => item}
       />
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )}
     </SafeAreaView>
   );
 };
