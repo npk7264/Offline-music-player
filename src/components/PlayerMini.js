@@ -15,7 +15,6 @@ const PlayerMini = () => {
       style={styles.view}
       onPress={() => {
         navigation.navigate("Player");
-        // console.log(contextAudio.pressedInfo.info)
       }}
     >
       <Slider disabled={true} value={0.15}></Slider>

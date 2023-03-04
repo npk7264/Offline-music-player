@@ -1,5 +1,53 @@
 import { Audio } from "expo-av";
 import { songData } from "../../data/songData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const RECENT = "RECENT";
+
+const saveRecent = async (contextAudio, id) => {
+  let listRecent = [];
+  try {
+    // ĐỌC DỮ LIỆU từ Async Storage để set ListRecent
+    const value = await AsyncStorage.getItem(RECENT);
+    if (value !== null) {
+      listRecent = JSON.parse(value);
+      // LƯU DỮ LIỆU mới
+      let jsonValue = JSON.parse(value);
+      // thời gian các lần nghe
+      let timeList = jsonValue
+        .filter((item) => {
+          return item.id == id;
+        })
+        .map((item) => item.time)[0];
+      if (timeList == undefined) timeList = [];
+      // console.log(jsonValue);
+      // kiểm tra dữ liệu nghe gần đây có bài hát đang phát chưa, nếu có => remove => thêm mới
+      if (jsonValue.map((item) => item.id).includes(id)) {
+        jsonValue = jsonValue.filter((item) => {
+          return item.id != id;
+        });
+      }
+      //lưu
+      await AsyncStorage.setItem(
+        RECENT,
+        JSON.stringify([
+          {
+            id: id,
+            time: [...timeList, new Date()],
+          },
+          ...jsonValue,
+        ])
+      );
+    } else
+      await AsyncStorage.setItem(
+        RECENT,
+        JSON.stringify([{ id: id, time: [new Date()] }])
+      );
+    // await AsyncStorage.removeItem(RECENT)
+  } catch (e) {
+    alert("Failed to fetch the RECENT from storage");
+  }
+};
 
 //dừng phát
 export const pauseSong = async (contextAudio) => {
@@ -25,16 +73,7 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
       songdata[index].id < songData.length ? songdata[index].uri : { uri },
       {},
       (status) => {
-        if (status.isLoaded && status.isPlaying) {
-          console.log(status.positionMillis);
-          // contextAudio.updateState({
-          //   ...contextAudio.audioState,
-          //   currentPosition: status.positionMillis,
-          // });
-        }
-        if (status.didJustFinish) {
-          // if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
-          // else nextSong();
+        if (status.isLoaded && status.didJustFinish) {
           console.log("finish");
         }
       }
@@ -51,6 +90,7 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
       currentDuration: status.durationMillis,
     });
     await sound.playAsync();
+    saveRecent(contextAudio, info.id);
   } catch (error) {
     console.log("error inside playNewSong helper method", error.message);
   }
@@ -58,15 +98,14 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
 
 //
 export const handleAudioPress = async (contextAudio, index, info, songdata) => {
-  // thông tin item click vào
-  contextAudio.updatePressedInfo({
-    ...contextAudio.pressedInfo,
-    index: index,
-    info: info,
-    songdata: songdata,
-  });
-
   try {
+    // thông tin item click vào
+    contextAudio.updatePressedInfo({
+      ...contextAudio.pressedInfo,
+      index: index,
+      info: info,
+      songdata: songdata,
+    });
     // phát nhạc lần đầu
     if (contextAudio.audioState.soundObj === null) {
       // file nhac
@@ -75,16 +114,8 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
         songdata[index].id < songData.length ? songdata[index].uri : { uri },
         {},
         (status) => {
-          if (status.isLoaded && status.isPlaying) {
-            console.log(status.positionMillis);
-            // contextAudio.updateState({
-            //   ...contextAudio.audioState,
-            //   currentPosition: status.positionMillis,
-            // });
-          }
           if (status.didJustFinish) {
-            // if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
-            // else nextSong();
+            // pauseSong(contextAudio);
             console.log("finish");
           }
         }
@@ -101,6 +132,7 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
         currentDuration: status.durationMillis,
       });
       await sound.playAsync();
+      saveRecent(contextAudio, info.id);
     }
     // dừng nhạc
     else if (

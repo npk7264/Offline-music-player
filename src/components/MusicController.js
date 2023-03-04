@@ -18,6 +18,7 @@ const RECENT = "RECENT";
 
 const MusicController = () => {
   const contextAudio = useContext(AudioContext);
+  const [index, setIndex] = useState(contextAudio.audioState.currentIndex);
 
   const [like, setLike] = useState(false); // lưu trạng thái like/unlike
   const [listLike, setListLike] = useState([]); // lưu danh sách đã like
@@ -28,8 +29,8 @@ const MusicController = () => {
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
-    if (currentPosition !== null && currentDuration !== null)
-      return currentPosition / currentDuration;
+    if (posTime !== null && contextAudio.audioState.currentDuration !== null)
+      return posTime / contextAudio.audioState.currentDuration;
     return 0;
   };
   // hàm chuyển đổi định dạng thời gian
@@ -57,7 +58,8 @@ const MusicController = () => {
     const prevIndex =
       currentIndex - 1 >= 0 ? currentIndex - 1 : currentPlaylist.length - 1;
     const prevInfo = currentPlaylist[prevIndex];
-    handleAudioPress(contextAudio, prevIndex, prevInfo, currentPlaylist);
+    setIndex(prevIndex);
+    // handleAudioPress(contextAudio, prevIndex, prevInfo, currentPlaylist);
   };
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
@@ -66,7 +68,8 @@ const MusicController = () => {
     const nextIndex =
       currentIndex + 1 < currentPlaylist.length ? currentIndex + 1 : 0;
     const nextInfo = currentPlaylist[nextIndex];
-    handleAudioPress(contextAudio, nextIndex, nextInfo, currentPlaylist);
+    setIndex(nextIndex);
+    // handleAudioPress(contextAudio, nextIndex, nextInfo, currentPlaylist);
   };
   // lặp bài hát
   const repeatSong = async (flag) => {
@@ -79,17 +82,26 @@ const MusicController = () => {
       isLooping: flag,
     });
   };
-  // // sự kiện di chuyển seekbar
-  // const scrollSlider = async (value) => {
-  //   // console.log("scroll");
-  //   const status = await sound.setPositionAsync(
-  //     Math.floor(value * durationTime)
-  //   );
-  //   setStatus(status);
-  //   //await resume(sound);
-  // };
+  // sự kiện di chuyển seekbar
+  const scrollSlider = async (value) => {
+    // console.log("scroll");
+    const status = await contextAudio.audioState.soundObj.setPositionAsync(
+      Math.floor(value * contextAudio.audioState.currentDuration)
+    );
+  };
+
   // phát bài hát mới
   const playNewSong = async (contextAudio, index, info, songdata) => {
+    // thông tin item click vào
+    setPosTime(0);
+    // thông tin item click vào
+    contextAudio.updatePressedInfo({
+      ...contextAudio.pressedInfo,
+      index: index,
+      info: info,
+      songdata: songdata,
+    });
+
     try {
       await contextAudio.audioState.soundObj.stopAsync();
       await contextAudio.audioState.soundObj.unloadAsync();
@@ -101,17 +113,11 @@ const MusicController = () => {
         {},
         (status) => {
           if (status.isLoaded && status.isPlaying) {
-            // console.log(status.positionMillis);
-            // contextAudio.updateState({
-            //   ...contextAudio.audioState,
-            //   currentPosition: status.positionMillis,
-            // });
             setPosTime(status.positionMillis);
           }
-          if (status.didJustFinish) {
-            // if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
-            // else nextSong();
+          if (status?.didJustFinish) {
             console.log("finish");
+            nextSong();
           }
         }
       );
@@ -126,24 +132,23 @@ const MusicController = () => {
         currentPlaylist: songdata,
         currentDuration: status.durationMillis,
       });
-      await sound.playAsync();
+      sound.playAsync();
     } catch (error) {
       console.log("error inside playNewSong helper method", error.message);
     }
   };
 
   const handleAudioPress = async (contextAudio, index, info, songdata) => {
-    // thông tin item click vào
-    contextAudio.updatePressedInfo({
-      ...contextAudio.pressedInfo,
-      index: index,
-      info: info,
-      songdata: songdata,
-    });
-
     try {
       // phát nhạc lần đầu
       if (contextAudio.audioState.soundObj === null) {
+        // thông tin item click vào
+        contextAudio.updatePressedInfo({
+          ...contextAudio.pressedInfo,
+          index: index,
+          info: info,
+          songdata: songdata,
+        });
         // file nhac
         const uri = songdata[index].uri;
         const { sound, status } = await Audio.Sound.createAsync(
@@ -151,16 +156,10 @@ const MusicController = () => {
           {},
           (status) => {
             if (status.isLoaded && status.isPlaying) {
-              // console.log(status.positionMillis);
-              // contextAudio.updateState({
-              //   ...contextAudio.audioState,
-              //   currentPosition: status.positionMillis,
-              // });
               setPosTime(status.positionMillis);
             }
             if (status.didJustFinish) {
-              // if (songdata.length == 1) playSoundFirstTime(songdata[index].uri);
-              // else nextSong();
+              nextSong();
               console.log("finish");
             }
           }
@@ -310,27 +309,23 @@ const MusicController = () => {
     readFavorite();
   }, []);
 
-  // // xử lí khi sound thay đổi
-  // useEffect(() => {
-  //   return sound
-  //     ? () => {
-  //         console.log("SOUND has CHANGED");
-  //         sound.unloadAsync();
-  //       }
-  //     : undefined;
-  // }, [sound]);
-
   // xử lí khi index bài hát thay đổi (thao tác next, previous, trạng thái like)
   useEffect(() => {
-    console.log(listRecent);
-    // console.log("MOVE to NEXT or PREVIOUS");
-    // if (isPlaying) playSoundFirstTime(songdata[index].uri);
-    // else replaySoundPause(songdata[index].uri);
+    // console.log(listRecent);
     readFavorite();
     saveRecent();
 
     // setRepeat(false);
   }, [contextAudio.audioState.currentIndex]);
+
+  useEffect(() => {
+    playNewSong(
+      contextAudio,
+      index,
+      contextAudio.audioState.currentPlaylist[index],
+      contextAudio.audioState.currentPlaylist
+    );
+  }, [index]);
 
   // xử lí trạng thái trả về từ PlaylistModal
   const turnOffModal = () => {
@@ -362,7 +357,7 @@ const MusicController = () => {
           alignItems: "center",
         }}
       >
-        {/* <Slider
+        <Slider
           style={styles.progressBar}
           minimumValue={0}
           maximumValue={1}
@@ -371,12 +366,14 @@ const MusicController = () => {
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
           onValueChange={(value) => {
-            setPosTime(Math.floor(value * durationTime));
+            setPosTime(
+              Math.floor(value * contextAudio.audioState.currentDuration)
+            );
           }}
           onSlidingComplete={async (value) => {
             await scrollSlider(value);
           }}
-        ></Slider> */}
+        ></Slider>
         <View style={styles.progressLevelDuration}>
           <Text style={styles.progressLabelText}>{convertTime(posTime)}</Text>
           <Text style={styles.progressLabelText}>
