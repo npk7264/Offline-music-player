@@ -115,7 +115,7 @@ const MusicController = () => {
           if (status.isLoaded && status.isPlaying) {
             setPosTime(status.positionMillis);
           }
-          if (status?.didJustFinish) {
+          if (status?.didJustFinish && !status.isLooping) {
             console.log("finish");
             nextSong();
           }
@@ -158,7 +158,7 @@ const MusicController = () => {
             if (status.isLoaded && status.isPlaying) {
               setPosTime(status.positionMillis);
             }
-            if (status.didJustFinish) {
+            if (status?.didJustFinish && !status.isLooping) {
               nextSong();
               console.log("finish");
             }

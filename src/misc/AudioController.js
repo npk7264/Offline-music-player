@@ -74,6 +74,10 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
       {},
       (status) => {
         if (status.isLoaded && status.didJustFinish) {
+          contextAudio.updateState({
+            ...contextAudio.audioState,
+            isPlaying: false,
+          });
           console.log("finish");
         }
       }
@@ -115,7 +119,10 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
         {},
         (status) => {
           if (status.didJustFinish) {
-            // pauseSong(contextAudio);
+            contextAudio.updateState({
+              ...contextAudio.audioState,
+              isPlaying: false,
+            });
             console.log("finish");
           }
         }

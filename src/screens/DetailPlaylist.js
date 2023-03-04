@@ -23,6 +23,7 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import { AudioContext } from "../context/AudioContext";
 import PlayerMini from "../components/PlayerMini";
+import { handleAudioPress } from "../misc/AudioController";
 
 const DetailPlaylist = ({ route }) => {
   const context = useContext(DataContext);
@@ -42,7 +43,12 @@ const DetailPlaylist = ({ route }) => {
         }}
         // sự kiện nhấn để nghe
         onPress={() => {
-          navigation.navigate("Player", { info, songdata });
+          const index = songdata
+            .map((item) => {
+              return item.id;
+            })
+            .indexOf(info.id);
+          handleAudioPress(contextAudio, index, info, songdata);
         }}
         // sự kiện nhấn giữ để xóa
         onLongPress={() => {

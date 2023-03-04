@@ -18,11 +18,15 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
+import { handleAudioPress } from "../misc/AudioController";
 
 const PLAYLIST = "PLAYLIST";
 
 const Search = () => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
   const navigation = useNavigation();
 
   const [searchContent, setSearchContent] = useState("");
@@ -116,11 +120,7 @@ const Search = () => {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              const firstSong = searchResult[0];
-              navigation.navigate("Player", {
-                info: firstSong,
-                songdata: searchResult,
-              });
+              handleAudioPress(contextAudio, 0, searchResult[0], searchResult);
             }}
           >
             <Icon name="play" size={25} color="#fff" />
@@ -150,6 +150,9 @@ const Search = () => {
         )}
         keyExtractor={(item) => item.id}
       />
+      {/* {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )} */}
     </SafeAreaView>
   );
 };
