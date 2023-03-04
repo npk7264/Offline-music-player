@@ -26,7 +26,7 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
       {},
       (status) => {
         if (status.isLoaded && status.isPlaying) {
-          console.log(10);
+          console.log(status.positionMillis);
           // contextAudio.updateState({
           //   ...contextAudio.audioState,
           //   currentPosition: status.positionMillis,
@@ -98,6 +98,7 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
         currentIndex: index,
         currentInfo: info,
         currentPlaylist: songdata,
+        currentDuration: status.durationMillis,
       });
       await sound.playAsync();
     }
