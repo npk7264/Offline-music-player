@@ -73,7 +73,7 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
       songdata[index].id < songData.length ? songdata[index].uri : { uri },
       {},
       (status) => {
-        if (status.isLoaded && status.didJustFinish) {
+        if (status.didJustFinish && !status.isLooping) {
           contextAudio.updateState({
             ...contextAudio.audioState,
             isPlaying: false,
@@ -118,7 +118,7 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
         songdata[index].id < songData.length ? songdata[index].uri : { uri },
         {},
         (status) => {
-          if (status.didJustFinish) {
+          if (status.didJustFinish && !status.isLooping) {
             contextAudio.updateState({
               ...contextAudio.audioState,
               isPlaying: false,

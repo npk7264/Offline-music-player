@@ -20,6 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataContext } from "../context/DataContext";
 import { AudioContext } from "../context/AudioContext";
 import PlayerMini from "../components/PlayerMini";
+import { handleAudioPress } from "../misc/AudioController";
 
 const FAVORITE = "FAVORITE";
 
@@ -42,7 +43,12 @@ const Favorite = () => {
         }}
         // sự kiện nhấn để nghe
         onPress={() => {
-          navigation.navigate("Player", { info, songdata });
+          const index = songdata
+            .map((item) => {
+              return item.id;
+            })
+            .indexOf(info.id);
+          handleAudioPress(contextAudio, index, info, songdata);
         }}
         // sự kiện nhấn giữ để xóa
         onLongPress={() => {

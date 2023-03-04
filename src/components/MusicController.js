@@ -26,6 +26,7 @@ const MusicController = () => {
   const [showPlaylistModal, setShowPlaylistModal] = useState(false); // lưu trạng thái ẩn hiện của bảng chọn playlist
   const [isRepeat, setRepeat] = useState(contextAudio.audioState.isLooping);
   const [posTime, setPosTime] = useState(0); // lưu vị trí hiện tại bài hát theo mili giây
+  const [currentPos, setCurrentPos] = useState("00:00");
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
@@ -137,7 +138,29 @@ const MusicController = () => {
       console.log("error inside playNewSong helper method", error.message);
     }
   };
-
+  //
+  const moveAudio = async (value) => {
+    if (
+      contextAudio.audioState.soundObj === null ||
+      !contextAudio.audioState.isPlaying
+    )
+      return;
+    try {
+      const status = await contextAudio.audioState.playbackObj.setPositionAsync(
+        Math.floor(value * contextAudio.audioState.currentDuration)
+      );
+      contextAudio.updateState({
+        ...contextAudio.audioState,
+        playbackObj: status,
+        isPlaying: true,
+        currentPosition: status.positionMillis,
+      });
+      await contextAudio.audioState.soundObj.playAsync();
+    } catch (error) {
+      console.log("error inside onSlidingComplete callback", error);
+    }
+  };
+  //
   const handleAudioPress = async (contextAudio, index, info, songdata) => {
     try {
       // phát nhạc lần đầu
@@ -366,16 +389,50 @@ const MusicController = () => {
           minimumTrackTintColor="#000"
           maximumTrackTintColor="#000"
           onValueChange={(value) => {
-            setPosTime(
-              Math.floor(value * contextAudio.audioState.currentDuration)
+            setCurrentPos(
+              convertTime(value * contextAudio.audioState.currentDuration)
             );
           }}
+          ////////// sự kiện bắt đầu kéo thanh seekbar
+          onSlidingStart={async () => {
+            if (!contextAudio.audioState.isPlaying) return;
+            try {
+              console.log("pause");
+              await contextAudio.audioState.soundObj.setStatusAsync({
+                shouldPlay: false,
+              });
+            } catch (error) {
+              console.log("error inside onSlidingStart callback", error);
+            }
+          }}
+          ////////// sự kiện hoàn thành
           onSlidingComplete={async (value) => {
-            await scrollSlider(value);
+            try {
+              const status =
+                await contextAudio.audioState.soundObj.setPositionAsync(
+                  Math.floor(value * contextAudio.audioState.currentDuration)
+                );
+              if (contextAudio.audioState.isPlaying) {
+                contextAudio.updateState({
+                  ...contextAudio.audioState,
+                  playbackObj: status,
+                  isPlaying: true,
+                  currentPosition: status.positionMillis,
+                });
+                await contextAudio.audioState.soundObj.playAsync();
+              } else
+                contextAudio.updateState({
+                  ...contextAudio.audioState,
+                  playbackObj: status,
+                  currentPosition: status.positionMillis,
+                });
+            } catch (error) {
+              console.log("error inside onSlidingComplete callback", error);
+            }
           }}
         ></Slider>
         <View style={styles.progressLevelDuration}>
-          <Text style={styles.progressLabelText}>{convertTime(posTime)}</Text>
+          <Text style={styles.progressLabelText}>{currentPos}</Text>
           <Text style={styles.progressLabelText}>
             {convertTime(contextAudio.audioState.currentDuration)}
           </Text>
