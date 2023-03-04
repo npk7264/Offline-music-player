@@ -139,28 +139,6 @@ const MusicController = () => {
     }
   };
   //
-  const moveAudio = async (value) => {
-    if (
-      contextAudio.audioState.soundObj === null ||
-      !contextAudio.audioState.isPlaying
-    )
-      return;
-    try {
-      const status = await contextAudio.audioState.playbackObj.setPositionAsync(
-        Math.floor(value * contextAudio.audioState.currentDuration)
-      );
-      contextAudio.updateState({
-        ...contextAudio.audioState,
-        playbackObj: status,
-        isPlaying: true,
-        currentPosition: status.positionMillis,
-      });
-      await contextAudio.audioState.soundObj.playAsync();
-    } catch (error) {
-      console.log("error inside onSlidingComplete callback", error);
-    }
-  };
-  //
   const handleAudioPress = async (contextAudio, index, info, songdata) => {
     try {
       // phát nhạc lần đầu
@@ -407,25 +385,32 @@ const MusicController = () => {
           }}
           ////////// sự kiện hoàn thành
           onSlidingComplete={async (value) => {
+            if (
+              contextAudio.audioState.soundObj === null ||
+              !contextAudio.audioState.isPlaying
+            ) {
+              const status =
+                await contextAudio.audioState.soundObj.setPositionAsync(
+                  Math.floor(value * contextAudio.audioState.currentDuration)
+                );
+              contextAudio.updateState({
+                ...contextAudio.audioState,
+                playbackObj: status,
+                currentPosition: status.positionMillis,
+              });
+              return;
+            }
             try {
               const status =
                 await contextAudio.audioState.soundObj.setPositionAsync(
                   Math.floor(value * contextAudio.audioState.currentDuration)
                 );
-              if (contextAudio.audioState.isPlaying) {
-                contextAudio.updateState({
-                  ...contextAudio.audioState,
-                  playbackObj: status,
-                  isPlaying: true,
-                  currentPosition: status.positionMillis,
-                });
-                await contextAudio.audioState.soundObj.playAsync();
-              } else
-                contextAudio.updateState({
-                  ...contextAudio.audioState,
-                  playbackObj: status,
-                  currentPosition: status.positionMillis,
-                });
+              contextAudio.updateState({
+                ...contextAudio.audioState,
+                playbackObj: status,
+                currentPosition: status.positionMillis,
+              });
+              await contextAudio.audioState.soundObj.playAsync();
             } catch (error) {
               console.log("error inside onSlidingComplete callback", error);
             }
