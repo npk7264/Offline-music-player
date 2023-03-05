@@ -97,7 +97,7 @@ const Song = () => {
         //throw new Error("No audio files found");
       }
       else
-        mp3Files = [...media];
+        mp3Files = [];
 
       const uris = mp3Files.map((asset, index) => ({
         id: songData.length + index,
