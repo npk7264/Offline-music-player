@@ -419,7 +419,13 @@ const MusicController = () => {
       {/* thanh điều khiển previous, play/pause, next */}
       <View style={styles.controllerContainer}>
         {/* xử lí sự kiện khi nhấn nút Previous */}
-        <TouchableOpacity style={styles.controllerItem} onPress={prevSong}>
+        <TouchableOpacity
+          style={styles.controllerItem}
+          onPress={() => {
+            setPlaying(true);
+            prevSong();
+          }}
+        >
           <Icon name="step-backward" size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
@@ -436,7 +442,13 @@ const MusicController = () => {
           <Icon name={playing ? "pause" : "play"} size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Next */}
-        <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
+        <TouchableOpacity
+          style={styles.controllerItem}
+          onPress={() => {
+            setPlaying(true);
+            nextSong();
+          }}
+        >
           <Icon name="step-forward" size={35} color="#333" />
         </TouchableOpacity>
       </View>
