@@ -66,7 +66,11 @@ const PlayerMini = () => {
               else await resume();
             }}
           >
-            <Icon name={playing ? "pause" : "play"} size={25} color="#fff" />
+            <Icon
+              name={contextAudio.audioState.isPlaying ? "pause" : "play"}
+              size={25}
+              color="#fff"
+            />
           </TouchableOpacity>
         </View>
       </View>
