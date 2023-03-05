@@ -20,6 +20,7 @@ import SortModal from "../components/SortModal";
 import PlayerMini from "../components/PlayerMini";
 import Player from "./Player";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioContext";
 
 import * as MediaLibrary from "expo-media-library";
 
@@ -57,7 +58,10 @@ function ConverVItoEN(str) {
 }
 
 const Song = () => {
+  // context data
   const context = useContext(DataContext);
+  // const audio
+  const contextAudio = useContext(AudioContext);
 
   const [showSort, setShowSort] = useState(false);
   // Function truyen tu component con ve
@@ -157,7 +161,9 @@ const Song = () => {
         Option={Option}
       />
 
-      {/* <PlayerMini></PlayerMini> */}
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )}
     </SafeAreaView>
   );
 };

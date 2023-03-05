@@ -19,11 +19,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
 
 const RECENT = "RECENT";
 
 const Chart = () => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
   const [listRecent, setListRecent] = useState([]);
   const [timeFilter, setTime] = useState("day");
 
@@ -45,14 +48,6 @@ const Chart = () => {
     // console.log("refresh RECENT PAGE");
     readRecent();
   }, [isFocused]);
-
-  // useEffect(() => {
-  //   console.log(
-  //     filterResult.map((item) => {
-  //       return { id: item.id, times: item.time.length };
-  //     })
-  //   );
-  // }, [timeFilter]);
 
   // hàm lọc danh sách nhạc theo ngày, tháng, năm
   const filterResult = listRecent.map((item) => {
@@ -172,6 +167,9 @@ const Chart = () => {
         )}
         keyExtractor={(item) => item.id}
       />
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )}
     </SafeAreaView>
   );
 };

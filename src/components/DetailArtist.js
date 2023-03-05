@@ -8,14 +8,17 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import BackBar from "../components/BackBar";
 import Title from "../components/Title";
 import SongItem from "./SongItem";
+import PlayerMini from "../components/PlayerMini";
+import { AudioContext } from "../context/AudioContext";
 import { songData } from "../../data/songData";
 
 const DetailArtist = ({ route }) => {
+  const contextAudio = useContext(AudioContext);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar></StatusBar>
@@ -33,6 +36,9 @@ const DetailArtist = ({ route }) => {
         )}
         keyExtractor={(item, index) => index}
       />
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )}
     </SafeAreaView>
   );
 };

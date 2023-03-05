@@ -18,11 +18,15 @@ import Title from "../components/Title";
 import { songData } from "../../data/songData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
+import { handleAudioPress } from "../misc/AudioController";
 
 const FAVORITE = "FAVORITE";
 
 const Favorite = () => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
   const [favoriteList, setFavoriteList] = useState([]);
   const navigation = useNavigation();
 
@@ -39,7 +43,12 @@ const Favorite = () => {
         }}
         // sự kiện nhấn để nghe
         onPress={() => {
-          navigation.navigate("Player", { info, songdata });
+          const index = songdata
+            .map((item) => {
+              return item.id;
+            })
+            .indexOf(info.id);
+          handleAudioPress(contextAudio, index, info, songdata);
         }}
         // sự kiện nhấn giữ để xóa
         onLongPress={() => {
@@ -183,6 +192,9 @@ const Favorite = () => {
             Xoá tất cả
           </Text>
         </View>
+      )}
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
       )}
     </SafeAreaView>
   );

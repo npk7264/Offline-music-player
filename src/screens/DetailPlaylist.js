@@ -21,8 +21,13 @@ import SongModal from "../components/SongModal";
 import Title from "../components/Title";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
+import { handleAudioPress } from "../misc/AudioController";
+
 const DetailPlaylist = ({ route }) => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
   const navigation = useNavigation();
 
   // component songitem
@@ -38,7 +43,12 @@ const DetailPlaylist = ({ route }) => {
         }}
         // sự kiện nhấn để nghe
         onPress={() => {
-          navigation.navigate("Player", { info, songdata });
+          const index = songdata
+            .map((item) => {
+              return item.id;
+            })
+            .indexOf(info.id);
+          handleAudioPress(contextAudio, index, info, songdata);
         }}
         // sự kiện nhấn giữ để xóa
         onLongPress={() => {
@@ -157,6 +167,9 @@ const DetailPlaylist = ({ route }) => {
         )}
         keyExtractor={(item) => item.id}
       />
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )}
       {/* SongModal */}
       <SongModal
         showSongModal={showSongModal}

@@ -15,9 +15,12 @@ import ArtistItem from "../components/ArtistItem";
 import Title from "../components/Title";
 import { songData } from "../../data/songData";
 import { DataContext } from "../context/DataContext";
+import { AudioContext } from "../context/AudioContext";
+import PlayerMini from "../components/PlayerMini";
 
 const Artist = () => {
   const context = useContext(DataContext);
+  const contextAudio = useContext(AudioContext);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -41,6 +44,9 @@ const Artist = () => {
         )}
         keyExtractor={(item, index) => index}
       />
+      {contextAudio.audioState.currentIndex !== null && (
+        <PlayerMini></PlayerMini>
+      )}
     </SafeAreaView>
   );
 };
