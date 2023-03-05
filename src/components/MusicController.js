@@ -11,7 +11,6 @@ import { Entypo } from "@expo/vector-icons";
 import TextTicker from "react-native-text-ticker";
 
 import { AudioContext } from "../context/AudioContext";
-import { pauseSong } from "../misc/AudioController";
 
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
@@ -56,21 +55,17 @@ const MusicController = () => {
 
   // thao tác tới bài hát trước đó
   const prevSong = () => {
-    const currentIndex = contextAudio.audioState.currentIndex;
-    const currentPlaylist = contextAudio.audioState.currentPlaylist;
-    const prevIndex =
-      currentIndex - 1 >= 0 ? currentIndex - 1 : currentPlaylist.length - 1;
-    const prevInfo = currentPlaylist[prevIndex];
-    setIndex(prevIndex);
+    setIndex(
+      index - 1 >= 0
+        ? index - 1
+        : contextAudio.audioState.currentPlaylist.length - 1
+    );
   };
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
-    const currentIndex = contextAudio.audioState.currentIndex;
-    const currentPlaylist = contextAudio.audioState.currentPlaylist;
-    const nextIndex =
-      currentIndex + 1 < currentPlaylist.length ? currentIndex + 1 : 0;
-    const nextInfo = currentPlaylist[nextIndex];
-    setIndex(nextIndex);
+    setIndex(
+      index + 1 < contextAudio.audioState.currentPlaylist.length ? index + 1 : 0
+    );
   };
   // lặp bài hát
   const repeatSong = async (flag) => {
@@ -265,19 +260,18 @@ const MusicController = () => {
     // console.log(listRecent);
     readFavorite();
     saveRecent();
-
-    // setRepeat(false);
   }, [contextAudio.audioState.currentIndex]);
 
   useEffect(() => {
     // phát bài mới nếu không phải lần đầu tiên render MusicController
-    if (!firstRender)
+    if (!firstRender) {
       playNewSong(
         contextAudio,
         index,
         contextAudio.audioState.currentPlaylist[index],
         contextAudio.audioState.currentPlaylist
       );
+    }
   }, [index]);
 
   // xử lí trạng thái trả về từ PlaylistModal
