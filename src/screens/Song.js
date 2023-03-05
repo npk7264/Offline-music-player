@@ -88,14 +88,17 @@ const Song = () => {
         mediaType: MediaLibrary.MediaType.audio,
       });
 
+      let mp3Files;
       // Check if media.assets is an array
-      if (!Array.isArray(media.assets)) {
-        throw new Error("No audio files found");
+      if (Array.isArray(media.assets)) {
+        mp3Files = media.assets.filter((asset) =>
+          asset.filename.endsWith(".mp3")
+        );
+        //throw new Error("No audio files found");
       }
+      else
+        mp3Files = [...media];
 
-      const mp3Files = media.assets.filter((asset) =>
-        asset.filename.endsWith(".mp3")
-      );
       const uris = mp3Files.map((asset, index) => ({
         id: songData.length + index,
         name: asset.filename.substring(0, asset.filename.length - 4),
@@ -136,8 +139,8 @@ const Song = () => {
           sortOption === "NgayThem"
             ? localData
             : sortOption === "NgheSi"
-            ? resultNgheSi
-            : resultBaiHat
+              ? resultNgheSi
+              : resultBaiHat
         }
         renderItem={({ item }) => (
           <SongItem
@@ -146,8 +149,8 @@ const Song = () => {
               sortOption === "NgayThem"
                 ? localData
                 : sortOption === "NgheSi"
-                ? resultNgheSi
-                : resultBaiHat
+                  ? resultNgheSi
+                  : resultBaiHat
             }
           />
         )}
