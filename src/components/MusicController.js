@@ -236,7 +236,7 @@ const MusicController = () => {
     });
   };
   const onPlaybackStatusUpdate = async (status) => {
-    if (status.isLoaded && status.isPlaying) {
+    if (status.isLoaded) {
       setPosTime(status.positionMillis);
     }
     if (status?.didJustFinish && !status.isLooping) {
