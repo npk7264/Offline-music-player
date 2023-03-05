@@ -60,9 +60,7 @@ const PlayerMini = () => {
           <TouchableOpacity
             style={styles.controllerItem}
             onPress={async () => {
-              const playingState = !playing;
-              setPlaying(playingState);
-              if (!playingState) await pause();
+              if (contextAudio.audioState.isPlaying) await pause();
               else await resume();
             }}
           >

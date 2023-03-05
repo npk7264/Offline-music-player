@@ -88,17 +88,7 @@ const playNewSong = async (contextAudio, index, info, songdata) => {
     // file nhac
     const uri = songdata[index].uri;
     const { sound, status } = await Audio.Sound.createAsync(
-      songdata[index].id < songData.length ? songdata[index].uri : { uri },
-      {},
-      (status) => {
-        if (status.didJustFinish && !status.isLooping) {
-          contextAudio.updateState({
-            ...contextAudio.audioState,
-            isPlaying: false,
-          });
-          console.log("finish");
-        }
-      }
+      songdata[index].id < songData.length ? songdata[index].uri : { uri }
     );
     await contextAudio.updateState({
       ...contextAudio.audioState,
@@ -133,17 +123,7 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
       // file nhac
       const uri = songdata[index].uri;
       const { sound, status } = await Audio.Sound.createAsync(
-        songdata[index].id < songData.length ? songdata[index].uri : { uri },
-        {},
-        (status) => {
-          if (status.didJustFinish && !status.isLooping) {
-            contextAudio.updateState({
-              ...contextAudio.audioState,
-              isPlaying: false,
-            });
-            console.log("finish");
-          }
-        }
+        songdata[index].id < songData.length ? songdata[index].uri : { uri }
       );
       await contextAudio.updateState({
         ...contextAudio.audioState,
