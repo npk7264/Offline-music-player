@@ -28,6 +28,7 @@ const MusicController = () => {
   const [posTime, setPosTime] = useState(0); // lưu vị trí hiện tại bài hát theo mili giây
   const [currentPos, setCurrentPos] = useState("00:00");
   const [firstRender, setFirstRender] = useState(true);
+  const [playing, setPlaying] = useState(contextAudio.audioState.isPlaying);
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
@@ -485,6 +486,7 @@ const MusicController = () => {
         <TouchableOpacity
           style={styles.controllerItem}
           onPress={() => {
+            setPlaying(!playing);
             // Kiểm tra trạng thái isPlaying để phát nhạc hoặc tạm dừng
             handleAudioPress(
               contextAudio,
@@ -494,11 +496,7 @@ const MusicController = () => {
             );
           }}
         >
-          <Icon
-            name={contextAudio.audioState.isPlaying ? "pause" : "play"}
-            size={35}
-            color="#333"
-          />
+          <Icon name={playing ? "pause" : "play"} size={35} color="#333" />
         </TouchableOpacity>
         {/* xử lí sự kiện khi nhấn nút Next */}
         <TouchableOpacity style={styles.controllerItem} onPress={nextSong}>
