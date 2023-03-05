@@ -266,6 +266,7 @@ const MusicController = () => {
   useEffect(() => {
     // phát bài mới nếu không phải lần đầu tiên render MusicController
     if (!firstRender) {
+      setRepeat(false);
       playNewSong(
         contextAudio,
         index,
