@@ -27,6 +27,7 @@ const MusicController = () => {
   const [isRepeat, setRepeat] = useState(contextAudio.audioState.isLooping);
   const [posTime, setPosTime] = useState(0); // lưu vị trí hiện tại bài hát theo mili giây
   const [currentPos, setCurrentPos] = useState("00:00");
+  const [firstRender, setFirstRender] = useState(true);
 
   //hàm tính value cho thanh slider
   const convertValueSlider = () => {
@@ -82,13 +83,6 @@ const MusicController = () => {
       playbackObj: status,
       isLooping: flag,
     });
-  };
-  // sự kiện di chuyển seekbar
-  const scrollSlider = async (value) => {
-    // console.log("scroll");
-    const status = await contextAudio.audioState.soundObj.setPositionAsync(
-      Math.floor(value * contextAudio.audioState.currentDuration)
-    );
   };
 
   // phát bài hát mới
@@ -305,9 +299,24 @@ const MusicController = () => {
     }
   };
 
+  const onPlaybackStatusUpdate = async (status) => {
+    if (status.isLoaded && status.isPlaying) {
+      setPosTime(status.positionMillis);
+    }
+    if (status?.didJustFinish && !status.isLooping) {
+      console.log("finish");
+      nextSong();
+    }
+  };
+
   // xử lí khi dữ liệu thay đổi
   useEffect(() => {
+    // chạy statusUpdate để cập nhật thời gian ở lần đầu tiên render MusicController
+    contextAudio.audioState.soundObj.setOnPlaybackStatusUpdate(
+      onPlaybackStatusUpdate
+    );
     readFavorite();
+    setFirstRender(false);
   }, []);
 
   // xử lí khi index bài hát thay đổi (thao tác next, previous, trạng thái like)
@@ -320,12 +329,14 @@ const MusicController = () => {
   }, [contextAudio.audioState.currentIndex]);
 
   useEffect(() => {
-    playNewSong(
-      contextAudio,
-      index,
-      contextAudio.audioState.currentPlaylist[index],
-      contextAudio.audioState.currentPlaylist
-    );
+    // phát bài mới nếu không phải lần đầu tiên render MusicController
+    if (!firstRender)
+      playNewSong(
+        contextAudio,
+        index,
+        contextAudio.audioState.currentPlaylist[index],
+        contextAudio.audioState.currentPlaylist
+      );
   }, [index]);
 
   // xử lí trạng thái trả về từ PlaylistModal
