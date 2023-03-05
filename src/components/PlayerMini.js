@@ -42,9 +42,9 @@ const PlayerMini = () => {
         navigation.navigate("Player");
       }}
     >
-      <Slider disabled={true} value={0.15}></Slider>
+      {/* <Slider disabled={true} value={0.15}></Slider> */}
       <View style={{ flex: 1, flexDirection: "row" }}>
-        <View style={{ flex: 2, marginLeft: 15 }}>
+        <View style={{ flex: 2, marginLeft: 15, paddingTop: 10 }}>
           <Text
             style={{ fontSize: 20, color: "black", fontWeight: "500" }}
             numberOfLines={1}
