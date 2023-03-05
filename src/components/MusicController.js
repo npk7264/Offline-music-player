@@ -259,7 +259,8 @@ const MusicController = () => {
   useEffect(() => {
     // console.log(listRecent);
     readFavorite();
-    saveRecent();
+    // lưu bài hát gần đây nếu không phải lần đầu tiên render MusicController
+    if (!firstRender) saveRecent();
   }, [contextAudio.audioState.currentIndex]);
 
   useEffect(() => {
