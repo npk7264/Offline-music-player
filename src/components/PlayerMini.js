@@ -4,12 +4,37 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { AudioContext } from "../context/AudioContext";
 import { handleAudioPress } from "../misc/AudioController";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 const PlayerMini = () => {
   const contextAudio = useContext(AudioContext);
   const navigation = useNavigation(useNavigation);
-  // const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(contextAudio.audioState.isPlaying);
+
+  const pause = async () => {
+    console.log("pause");
+    const status = await contextAudio.audioState.soundObj.pauseAsync();
+    contextAudio.updateState({
+      ...contextAudio.audioState,
+      playbackObj: status,
+      isPlaying: false,
+    });
+  };
+  const resume = async () => {
+    console.log("resume");
+    const status = await contextAudio.audioState.soundObj.playAsync();
+    contextAudio.updateState({
+      ...contextAudio.audioState,
+      playbackObj: status,
+      isPlaying: true,
+    });
+  };
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setPlaying(contextAudio.audioState.isPlaying);
+  }, [isFocused]);
+
   return (
     <TouchableOpacity
       style={styles.view}
@@ -34,21 +59,14 @@ const PlayerMini = () => {
         <View style={styles.controllerContainer}>
           <TouchableOpacity
             style={styles.controllerItem}
-            onPress={() => {
-              // setPlaying(!playing);
-              handleAudioPress(
-                contextAudio,
-                contextAudio.pressedInfo.index,
-                contextAudio.pressedInfo.info,
-                contextAudio.pressedInfo.songdata
-              );
+            onPress={async () => {
+              const playingState = !playing;
+              setPlaying(playingState);
+              if (!playingState) await pause();
+              else await resume();
             }}
           >
-            <Icon
-              name={contextAudio.audioState.isPlaying ? "pause" : "play"}
-              size={25}
-              color="#fff"
-            />
+            <Icon name={playing ? "pause" : "play"} size={25} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>
