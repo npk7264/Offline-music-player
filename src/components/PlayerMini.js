@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 const PlayerMini = () => {
   const contextAudio = useContext(AudioContext);
   const navigation = useNavigation(useNavigation);
-  const [playing, setPlaying] = useState(contextAudio.audioState.isPlaying);
+  // const [playing, setPlaying] = useState(false);
   return (
     <TouchableOpacity
       style={styles.view}
@@ -35,7 +35,7 @@ const PlayerMini = () => {
           <TouchableOpacity
             style={styles.controllerItem}
             onPress={() => {
-              setPlaying(!playing);
+              // setPlaying(!playing);
               handleAudioPress(
                 contextAudio,
                 contextAudio.pressedInfo.index,
@@ -44,7 +44,11 @@ const PlayerMini = () => {
               );
             }}
           >
-            <Icon name={playing ? "pause" : "play"} size={25} color="#fff" />
+            <Icon
+              name={contextAudio.audioState.isPlaying ? "pause" : "play"}
+              size={25}
+              color="#fff"
+            />
           </TouchableOpacity>
         </View>
       </View>
