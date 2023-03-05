@@ -11,7 +11,7 @@ import { Entypo } from "@expo/vector-icons";
 import TextTicker from "react-native-text-ticker";
 
 import { AudioContext } from "../context/AudioContext";
-import { handleAudioPress, pauseSong } from "../misc/AudioController";
+import { pauseSong } from "../misc/AudioController";
 
 const FAVORITE = "FAVORITE";
 const RECENT = "RECENT";
@@ -62,7 +62,6 @@ const MusicController = () => {
       currentIndex - 1 >= 0 ? currentIndex - 1 : currentPlaylist.length - 1;
     const prevInfo = currentPlaylist[prevIndex];
     setIndex(prevIndex);
-    // handleAudioPress(contextAudio, prevIndex, prevInfo, currentPlaylist);
   };
   // thao tác tới bài hát kế tiếp
   const nextSong = () => {
@@ -72,7 +71,6 @@ const MusicController = () => {
       currentIndex + 1 < currentPlaylist.length ? currentIndex + 1 : 0;
     const nextInfo = currentPlaylist[nextIndex];
     setIndex(nextIndex);
-    // handleAudioPress(contextAudio, nextIndex, nextInfo, currentPlaylist);
   };
   // lặp bài hát
   const repeatSong = async (flag) => {
@@ -131,82 +129,6 @@ const MusicController = () => {
       sound.playAsync();
     } catch (error) {
       console.log("error inside playNewSong helper method", error.message);
-    }
-  };
-  //
-  const handleAudioPress = async (contextAudio, index, info, songdata) => {
-    try {
-      // phát nhạc lần đầu
-      if (contextAudio.audioState.soundObj === null) {
-        // thông tin item click vào
-        contextAudio.updatePressedInfo({
-          ...contextAudio.pressedInfo,
-          index: index,
-          info: info,
-          songdata: songdata,
-        });
-        // file nhac
-        const uri = songdata[index].uri;
-        const { sound, status } = await Audio.Sound.createAsync(
-          songdata[index].id < songData.length ? songdata[index].uri : { uri },
-          {},
-          (status) => {
-            if (status.isLoaded && status.isPlaying) {
-              setPosTime(status.positionMillis);
-            }
-            if (status?.didJustFinish && !status.isLooping) {
-              nextSong();
-              console.log("finish");
-            }
-          }
-        );
-        await contextAudio.updateState({
-          ...contextAudio.audioState,
-          playbackObj: status,
-          soundObj: sound,
-          isPlaying: true,
-          isLooping: false,
-          currentIndex: index,
-          currentInfo: info,
-          currentPlaylist: songdata,
-          currentDuration: status.durationMillis,
-        });
-        await sound.playAsync();
-      }
-      // dừng nhạc
-      else if (
-        contextAudio.audioState.isPlaying &&
-        contextAudio.audioState.currentInfo.id === info.id
-      ) {
-        console.log("pause");
-        const status = await contextAudio.audioState.soundObj.pauseAsync();
-        contextAudio.updateState({
-          ...contextAudio.audioState,
-          playbackObj: status,
-          isPlaying: false,
-          currentPosition: status.positionMillis,
-        });
-      }
-      // tiếp tục
-      else if (
-        !contextAudio.audioState.isPlaying &&
-        contextAudio.audioState.currentInfo.id === info.id
-      ) {
-        console.log("resume");
-        const status = await contextAudio.audioState.soundObj.playAsync();
-        contextAudio.updateState({
-          ...contextAudio.audioState,
-          playbackObj: status,
-          isPlaying: true,
-        });
-      }
-      // phát bài khác
-      else if (contextAudio.audioState.currentInfo.id !== info.id) {
-        console.log("play new song");
-        playNewSong(contextAudio, index, info, songdata);
-      }
-    } catch {
-      alert("Fail to handle audio");
     }
   };
 
@@ -300,6 +222,24 @@ const MusicController = () => {
     }
   };
 
+  const pause = async () => {
+    console.log("pause");
+    const status = await contextAudio.audioState.soundObj.pauseAsync();
+    contextAudio.updateState({
+      ...contextAudio.audioState,
+      playbackObj: status,
+      isPlaying: false,
+    });
+  };
+  const resume = async () => {
+    console.log("resume");
+    const status = await contextAudio.audioState.soundObj.playAsync();
+    contextAudio.updateState({
+      ...contextAudio.audioState,
+      playbackObj: status,
+      isPlaying: true,
+    });
+  };
   const onPlaybackStatusUpdate = async (status) => {
     if (status.isLoaded && status.isPlaying) {
       setPosTime(status.positionMillis);
@@ -466,8 +406,8 @@ const MusicController = () => {
           style={[styles.controllerItem, { height: 40, width: 40 }]}
           onPress={() => {
             // Pause
-            // setIsPlaying(false);
-            pauseSong(contextAudio);
+            setPlaying(false);
+            pause(contextAudio);
             // Mở playlist Modal
             setShowPlaylistModal(true);
           }}
@@ -485,15 +425,12 @@ const MusicController = () => {
         {/* xử lí sự kiện khi nhấn nút Play/Pause */}
         <TouchableOpacity
           style={styles.controllerItem}
-          onPress={() => {
-            setPlaying(!playing);
+          onPress={async () => {
+            const playingState = !playing;
+            setPlaying(playingState);
             // Kiểm tra trạng thái isPlaying để phát nhạc hoặc tạm dừng
-            handleAudioPress(
-              contextAudio,
-              contextAudio.audioState.currentIndex,
-              contextAudio.audioState.currentInfo,
-              contextAudio.audioState.currentPlaylist
-            );
+            if (!playingState) await pause();
+            else await resume();
           }}
         >
           <Icon name={playing ? "pause" : "play"} size={35} color="#333" />

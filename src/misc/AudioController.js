@@ -57,7 +57,25 @@ export const pauseSong = async (contextAudio) => {
     ...contextAudio.audioState,
     playbackObj: status,
     isPlaying: false,
-    currentPosition: status.positionMillis,
+  });
+};
+
+const pause = async (contextAudio) => {
+  console.log("pause");
+  const status = await contextAudio.audioState.soundObj.pauseAsync();
+  contextAudio.updateState({
+    ...contextAudio.audioState,
+    playbackObj: status,
+    isPlaying: false,
+  });
+};
+const resume = async (contextAudio) => {
+  console.log("resume");
+  const status = await contextAudio.audioState.soundObj.playAsync();
+  contextAudio.updateState({
+    ...contextAudio.audioState,
+    playbackObj: status,
+    isPlaying: true,
   });
 };
 
@@ -146,27 +164,14 @@ export const handleAudioPress = async (contextAudio, index, info, songdata) => {
       contextAudio.audioState.isPlaying &&
       contextAudio.audioState.currentInfo.id === info.id
     ) {
-      console.log("pause");
-      const status = await contextAudio.audioState.soundObj.pauseAsync();
-      contextAudio.updateState({
-        ...contextAudio.audioState,
-        playbackObj: status,
-        isPlaying: false,
-        currentPosition: status.positionMillis,
-      });
+      pause(contextAudio);
     }
     // tiếp tục
     else if (
       !contextAudio.audioState.isPlaying &&
       contextAudio.audioState.currentInfo.id === info.id
     ) {
-      console.log("resume");
-      const status = await contextAudio.audioState.soundObj.playAsync();
-      contextAudio.updateState({
-        ...contextAudio.audioState,
-        playbackObj: status,
-        isPlaying: true,
-      });
+      resume(contextAudio);
     }
     // phát bài khác
     else if (contextAudio.audioState.currentInfo.id !== info.id) {
