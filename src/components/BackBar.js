@@ -25,9 +25,10 @@ const BackBar = () => {
     <View style={styles.backBar}>
       <TouchableOpacity
         onPress={() => {
-          contextAudio.audioState.soundObj.setOnPlaybackStatusUpdate(
-            onPlaybackStatusUpdate
-          );
+          if (contextAudio.audioState.soundObj !== null)
+            contextAudio.audioState.soundObj.setOnPlaybackStatusUpdate(
+              onPlaybackStatusUpdate
+            );
           navigation.goBack();
         }}
         style={{
